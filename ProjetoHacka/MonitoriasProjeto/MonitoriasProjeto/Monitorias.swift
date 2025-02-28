@@ -11,9 +11,9 @@ struct Monitorias: View {
     let minhaCor = Color.black
     let azul = Color.black
     
-    @State private var heartRate: Int? = nil
-    @State private var isMeasuring: Bool = false
-    @State private var errorMessage: String? = nil
+    @State private var batimentos: Int? = nil
+    @State private var medindo: Bool = false
+    @State private var mensagemErro: String? = nil
 
     var body: some View {
         VStack {
@@ -43,8 +43,8 @@ struct Monitorias: View {
                     HStack {
                         Image(systemName: "suit.heart.fill")
                             .foregroundColor(Color.red)
-                        if let hr = heartRate {
-                            Text("Média de batimentos: \(hr) BPM")
+                        if let bat = batimentos {
+                            Text("Média de batimentos: \(bat) BPM")
                                 .foregroundColor(.white)
                         } else {
                             Text("Média de batimentos")
@@ -52,9 +52,9 @@ struct Monitorias: View {
                         }
                         Spacer()
                         Button(action: {
-                            measureHeartRate()
+                            medirBatimentos()
                         }) {
-                            if isMeasuring {
+                            if medindo {
                                 ProgressView()
                                     .progressViewStyle(CircularProgressViewStyle(tint: .white))
                             } else {
@@ -83,7 +83,7 @@ struct Monitorias: View {
                     HStack {
                         Image(systemName: "drop.fill")
                             .foregroundColor(azul)
-                        Text("Meta de Agua")
+                        Text("Meta de Água")
                             .foregroundColor(.white)
                         Spacer()
                     }
@@ -96,8 +96,8 @@ struct Monitorias: View {
                 Spacer()
             }
             
-            if let error = errorMessage {
-                Text("Erro: \(error)")
+            if let erro = mensagemErro {
+                Text("Erro: \(erro)")
                     .foregroundColor(.red)
                     .padding()
             }
@@ -106,37 +106,38 @@ struct Monitorias: View {
         .background(Color.white.ignoresSafeArea())
     }
     
-    func measureHeartRate() {
-        isMeasuring = true
-        errorMessage = nil
+    // Função de requisição ao Node-RED/Arduino
+    func medirBatimentos() {
+        medindo = true
+        mensagemErro = nil
         
-        // URL do Node-RED/Arduino
+        // Substitua pela URL do seu Node-RED/Arduino
         guard let url = URL(string: "http://192.168.1.100:1880/measure") else {
-            errorMessage = "URL inválida"
-            isMeasuring = false
+            mensagemErro = "URL inválida"
+            medindo = false
             return
         }
         
         URLSession.shared.dataTask(with: url) { data, response, error in
             DispatchQueue.main.async {
-                isMeasuring = false
+                medindo = false
                 
                 if let error = error {
-                    errorMessage = error.localizedDescription
+                    mensagemErro = error.localizedDescription
                     return
                 }
                 
                 guard let data = data else {
-                    errorMessage = "Dados não recebidos"
+                    mensagemErro = "Dados não recebidos"
                     return
                 }
                 
                 // JSON no formato: { "heartRate": 75 }
                 if let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
-                   let rate = json["heartRate"] as? Int {
-                    heartRate = rate
+                   let batimento = json["heartRate"] as? Int {
+                    batimentos = batimento
                 } else {
-                    errorMessage = "Formato de dados inválido"
+                    mensagemErro = "Formato de dados inválido"
                 }
             }
         }.resume()
