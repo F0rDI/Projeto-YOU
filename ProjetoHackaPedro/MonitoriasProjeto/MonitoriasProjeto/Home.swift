@@ -62,7 +62,7 @@ struct Home: View {
                     // Parte principal do card (data e dia)
                     VStack {
                             Text(item.dat)
-                                .padding(.top, 50)
+                                .padding(.top, 30)
                                 .font(Font.custom("Impact", size: 40).bold())
                                 .foregroundColor(.white)
                             
@@ -102,7 +102,7 @@ struct Home: View {
                             .padding()
                             .foregroundColor(.white)
                         }
-                        .frame(minHeight: 200) // Limita a altura do "popup"
+                        .frame(minHeight: 150) // Limita a altura do "popup"
                         .background(azul.opacity(0.9))
                         .cornerRadius(8)
                         .transition(.move(edge: .bottom))
