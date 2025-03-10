@@ -20,13 +20,13 @@ struct SonoPrototipo: View {
                 Image(systemName: "icloud.circle.fill")
                     .resizable()
                     .frame(width: 30.0, height: 30.0)
-                    .foregroundColor(.blue)
+                    .foregroundStyle(Color.blue)
                 
                 
                 ZStack {
                     Rectangle()
                         .frame(width: 100.0, height: 30.0)
-                        .foregroundColor(.blue)
+                        .foregroundStyle(Color.blue)
                         .cornerRadius(10)
                     
                     Text ("Sono")
@@ -41,40 +41,58 @@ struct SonoPrototipo: View {
             ScrollView {
                 
                 ZStack {
-                    
                     Rectangle()
-                        .foregroundColor(.black)
+                        .foregroundStyle(Color.black)
                         .cornerRadius(10)
                         .shadow(color: .black ,radius: 3)
                     
                     HStack {
                         
-                        
-                        
                         Text (actualDate, format: .dateTime.day().month())
                             .offset(x:20)
-                            .foregroundColor(.white)
+                            .foregroundStyle(Color.white)
                         
                         Spacer()
                         
+                        
                         VStack {
+                            HStack {
+                                Text ("Acordei")
+                                    .foregroundColor(.white)
+                                Text(selectedStartHour.formatted(date: .omitted, time: .shortened))
+                                    .colorInvert()
+                                    .colorMultiply(.white)
+                            }
                             
                             HStack {
                                 Text ("Dormi")
                                     .foregroundColor(.white)
-                                DatePicker("", selection: $selectedStartHour, displayedComponents: .hourAndMinute)
-                                    .frame(width: 60.0, height: 20.0)
-                                    .datePickerStyle(CompactDatePickerStyle())
+                                Text(selectedFinalHour.formatted(date: .omitted, time: .shortened))
                                     .colorInvert()
                                     .colorMultiply(.white)
-                                    .labelsHidden()
-                                    .clipped()
-                                    
-                                        
-                                        
-                                
                             }
-                            
+
+                            }
+                        
+                    }
+                }
+                
+                ZStack {
+                    
+                    Rectangle()
+                        .foregroundStyle(Color.black)
+                        .cornerRadius(10)
+                        .shadow(color: .black ,radius: 3)
+                    
+                    HStack {
+                        
+                        Text (actualDate, format: .dateTime.day().month())
+                            .offset(x:20)
+                            .foregroundStyle(Color.white)
+                        
+                        Spacer()
+                        
+                        VStack {
                             
                             HStack {
                                 Text ("Acordei")
@@ -82,11 +100,25 @@ struct SonoPrototipo: View {
                                 
                                 DatePicker("", selection: $selectedFinalHour, displayedComponents: .hourAndMinute)
                                     .frame(width: 60.0, height: 20.0)
-                                        .datePickerStyle(CompactDatePickerStyle())
-                                        .labelsHidden()
-                                        .clipped()
-                                        .colorInvert()
-                                        .colorMultiply(.white)
+                                    .datePickerStyle(CompactDatePickerStyle())
+                                    .labelsHidden()
+                                    .clipped()
+                                    .colorInvert()
+                                    .colorMultiply(.white)
+                            }
+                            
+                            
+                            HStack {
+                                Text ("Dormi")
+                                    .foregroundStyle(Color.white)
+                                
+                                DatePicker("", selection: $selectedStartHour, displayedComponents: .hourAndMinute)
+                                    .frame(width: 60.0, height: 20.0)
+                                    .datePickerStyle(CompactDatePickerStyle())
+                                    .colorInvert()
+                                    .colorMultiply(.white)
+                                    .labelsHidden()
+                                    .clipped()
                             }
                             
                         }
@@ -97,6 +129,7 @@ struct SonoPrototipo: View {
                     .frame(height: 70.0)
                     
                 }
+                
                 
             }
             .padding()
