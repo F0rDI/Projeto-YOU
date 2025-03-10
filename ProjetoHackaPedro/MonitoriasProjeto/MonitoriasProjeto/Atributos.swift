@@ -26,19 +26,19 @@ struct dadosDormir {
 
 struct refeicao {
     var horario: Date?
-    var ingredientes: [String]?
-    var preparo: [String]?
+    var ingredientes: String?
+    var preparo: String?
 }
 
 struct cronograma {
     var horario: Date?
-    var descricao: [String]?
+    var descricao: String?
 }
 
 struct tumtum {
-    var horarioInicio: Int?
-    var horarioFim: Int?
-    var valor: Double?
+    var horarioInicio: Date?
+    var horarioFim: Date?
+    var valor: Int?
 }
 
 struct planejamento {
@@ -58,7 +58,6 @@ struct dados {
 }
 
 struct pessoa: Decodable {
-    var registroPesos: [Bool]?
     var pesoMes: Double?
     var aguaTotal: Int?
     var dadosTotais: [dados]?
