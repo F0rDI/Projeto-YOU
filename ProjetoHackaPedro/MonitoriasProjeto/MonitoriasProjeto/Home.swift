@@ -1,47 +1,48 @@
-//
-//  Home.swift
-//  MonitoriasProjeto
-//
-//  Created by Turma02-22 on 26/02/25.
-//
-
 import SwiftUI
 
 struct Home: View {
-    @State var sheet = false
-    @State var scrollindex: Int = 0
+    // Controla o índice do dia atual (qual card mostrar)
+    @State var scrollIndex: Int = 0
+    
+    // Controla qual card está expandido. Se for nil, nenhum está expandido
+    @State private var expandedIndex: Int? = nil
     
     var body: some View {
-        VStack{
-            HStack{
+        VStack {
+            // Cabeçalho com o título "MEU DIA"
+            HStack {
                 Text("MEU DIA")
                     .foregroundColor(.white)
                     .frame(width: 130)
-                    .font(Font.custom("Title", size: 20).bold())
+                    .font(Font.custom("Arial", size: 20).bold())
                     .padding()
-                    .background(azul)
+                    .background(azul)   // Usa a cor "azul" sem alterar
                     .padding(.top, 1)
                     .shadow(color: minhaCor, radius: 5)
                 Spacer()
             }
             
-            Button(action: {}){
+            // Botão "INICIAR O CARDIO"
+            Button(action: {
+                // Ação para iniciar o cardio
+            }) {
                 Text("INICIAR O CARDIO")
                     .padding()
-                    .font(Font.custom("Poppins-regular", size: 20).bold())
+                    .font(Font.custom("Arial", size: 20).bold())
                     .foregroundColor(.white)
                     .frame(width: 250)
-                    .background(minhaCor)
+                    .background(minhaCor) // Usa a cor "minhaCor" sem alterar
                     .cornerRadius(10)
                     .padding(.top, 70)
                     .shadow(color: minhaCor, radius: 10)
-                
             }
             
-            HStack{
+            // Layout horizontal: seta esquerda, card atual, seta direita
+            HStack {
+                // Botão para ir ao dia anterior
                 Button (action: {
-                    if scrollindex > 0 {
-                        scrollindex -= 1
+                    if scrollIndex > 0 {
+                        scrollIndex -= 1
                     }
                 }) {
                     Image(systemName: "chevron.left")
@@ -49,49 +50,73 @@ struct Home: View {
                         .foregroundColor(.white)
                         .padding(8)
                         .background(minhaCor)
-                        .clipShape(/*@START_MENU_TOKEN@*/Circle()/*@END_MENU_TOKEN@*/)
+                        .clipShape(Circle())
                         .padding(.leading, 5)
                         .shadow(color: minhaCor ,radius: 5)
                 }
                 
-                ScrollViewReader { proxy in
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack{
-                            ForEach(Array(arrayData.enumerated()), id: \.offset) {index, dat in
-                                VStack{
-                                        Text(dat.dat)
-                                            .padding(.top, 50)
-                                            .font(Font.custom("arial", size: 40).bold())
-                                            .foregroundColor(.white)
-                                    HStack{
-                                        Spacer()
-                                        Text(dat.dia)
-                                            .padding()
-                                            .foregroundStyle(azul)
-                                            .font(Font.custom("Times", size: 30))
-                                            .padding(.bottom, 15)
-                                    }
-                                }
-                                .frame(width: 250, height: 150)
-                                .background(minhaCor)
-                                .cornerRadius(10)
-                                .shadow(color: minhaCor, radius: 3)
-                                .id(index)
+                // Pegamos o item (dia) correspondente ao scrollIndex atual
+                let item = arrayData[scrollIndex]
+                
+                VStack {
+                    // Parte principal do card (data e dia)
+                    VStack {
+                            Text(item.dat)
+                                .padding(.top, 50)
+                                .font(Font.custom("Impact", size: 40).bold())
+                                .foregroundColor(.white)
+                            
+                            HStack {
+                                Spacer()
+                                Text(item.dia)
+                                    .padding()
+                                    .foregroundStyle(azul)
+                                    .font(Font.custom("Arial", size: 30))
+                                    .padding(.bottom, 15)
                             }
-                        }
-                        .padding(.top, 20)
-                        .padding(.leading, 10)
                     }
-                    .onChange(of: scrollindex) { novoNumero in
-                        withAnimation{
-                            proxy.scrollTo(novoNumero, anchor: .center)
+                    .onTapGesture {
+                        // Ao tocar, expande/colapsa as infos adicionais
+                        withAnimation {
+                            if expandedIndex == scrollIndex {
+                                expandedIndex = nil
+                            } else {
+                                expandedIndex = scrollIndex
+                            }
                         }
                     }
                     
+                    // Se este card estiver expandido, mostra a parte extra
+                    if expandedIndex == scrollIndex {
+                        // Rolagem vertical caso as infos sejam grandes
+                        ScrollView(.vertical, showsIndicators: true) {
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("Refeição do dia:")
+                                    .font(.headline)
+                                Text("Almoço às 12h30 — Ingredientes: arroz, feijão, frango…")
+                                Text("Lanche às 16h — Ingredientes: frutas, iogurte…")
+                                Text("Jantar às 20h — Ingredientes: salada, peixe…")
+                                // Adicione mais linhas conforme necessário
+                            }
+                            .padding()
+                            .foregroundColor(.white)
+                        }
+                        .frame(maxHeight: 200) // Limita a altura do "popup"
+                        .background(azul.opacity(0.9))
+                        .cornerRadius(8)
+                        .transition(.move(edge: .bottom))
+                    }
                 }
+                .frame(width: 250)           // Largura fixa do card
+                .background(minhaCor)
+                .cornerRadius(10)
+                .shadow(color: minhaCor, radius: 3)
+                .padding(.bottom, expandedIndex == scrollIndex ? 20 : 0)
+                
+                // Botão para ir ao próximo dia
                 Button (action: {
-                    if scrollindex < arrayData.count - 1 {
-                        scrollindex += 1
+                    if scrollIndex < arrayData.count - 1 {
+                        scrollIndex += 1
                     }
                 }) {
                     Image(systemName: "chevron.right")
@@ -99,17 +124,19 @@ struct Home: View {
                         .foregroundColor(.white)
                         .padding(8)
                         .background(minhaCor)
-                        .clipShape(/*@START_MENU_TOKEN@*/Circle()/*@END_MENU_TOKEN@*/)
+                        .clipShape(Circle())
                         .padding(5)
                         .shadow(color: minhaCor ,radius: 5)
-                }  
+                }
             }
             .padding(.top, 30)
+            
             Spacer()
         }
     }
 }
 
+// Preview somente para teste no Canvas do Xcode
 #Preview {
     Home()
 }
