@@ -10,6 +10,7 @@ import SwiftUI
 struct Registro_Agua: View {
     var dados: Bool = true
     let actualDate = (Date.now)
+    var meta: Int = 12
     
     var body: some View {
         
@@ -20,17 +21,17 @@ struct Registro_Agua: View {
                 Image(systemName: "drop.circle.fill")
                     .resizable()
                     .frame(width: 30.0, height: 30.0)
-                    .foregroundColor(.blue)
+                    .foregroundStyle(Color.blue)
                 
                 
                 ZStack {
                     Rectangle()
                         .frame(width: 130.0, height: 30.0)
-                        .foregroundColor(.blue)
+                        .foregroundStyle(Color.blue)
                         .cornerRadius(10)
                     
                     Text ("Metas de água")
-                        .foregroundColor(.white)
+                        .foregroundStyle(Color.white)
                 }
             
                 Spacer()
@@ -43,25 +44,34 @@ struct Registro_Agua: View {
                 
                 ZStack {
                     
-                    
                     if (dados) {
                         Rectangle()
-                        .foregroundColor(.green)
+                        .foregroundStyle(Color.green)
                         .cornerRadius(10)
                         .shadow(color: .green ,radius: 3)
                     }
                     else {
                         Rectangle()
-                        .foregroundColor(.red)
+                            .foregroundStyle(Color.red)
                         .cornerRadius(10)
                         .shadow(color: .red ,radius: 3)
                     }
                     
                     Text (actualDate, format: .dateTime.day().month())
                         .offset(x:20)
-                        .foregroundColor(.white)
+                        .foregroundStyle(Color.white)
 
                 }
+            }
+            ZStack {
+                Rectangle()
+                    .frame(width: 350.0, height: 30.0)
+                    .foregroundColor(.black)
+                    .cornerRadius(10)
+                
+                Text ("Voce esta \(meta) dias cumprindo a meta")
+                    .foregroundStyle(Color.white)
+                
             }
             
         }
