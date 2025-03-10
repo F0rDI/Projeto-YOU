@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-struct BotaoDeAguaView: View {
+struct Agua: View {
     @State private var nivelDeAgua: CGFloat = 0 // Nível de água (0 a 1)
     @State private var animando: Bool = false // Controle da animação
 
@@ -79,4 +79,7 @@ struct BotaoDeAguaView: View {
             .padding(.top, 20)
         }
     }
+}
+#Preview {
+    Agua()
 }
