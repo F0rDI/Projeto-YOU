@@ -72,9 +72,10 @@ struct Home: View {
                                     .padding()
                                     .foregroundStyle(azul)
                                     .font(Font.custom("Arial", size: 30))
-                                    .padding(.bottom, 15)
+                                    //.padding(.bottom, 15)
                             }
                     }
+                    
                     .onTapGesture {
                         // Ao tocar, expande/colapsa as infos adicionais
                         withAnimation {
@@ -101,12 +102,13 @@ struct Home: View {
                             .padding()
                             .foregroundColor(.white)
                         }
-                        .frame(maxHeight: 200) // Limita a altura do "popup"
+                        .frame(minHeight: 200) // Limita a altura do "popup"
                         .background(azul.opacity(0.9))
                         .cornerRadius(8)
                         .transition(.move(edge: .bottom))
                     }
                 }
+                
                 .frame(width: 250)           // Largura fixa do card
                 .background(minhaCor)
                 .cornerRadius(10)
@@ -129,7 +131,7 @@ struct Home: View {
                         .shadow(color: minhaCor ,radius: 5)
                 }
             }
-            .padding(.top, 30)
+            .padding(.top, 70)
             
             Spacer()
         }
