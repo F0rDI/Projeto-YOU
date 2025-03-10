@@ -18,3 +18,48 @@ struct Data : Identifiable{
 }
 
 var arrayData = [Data(id: 1, dat: "01/02", dia: "Segunda"), Data(id: 2, dat: "02/02", dia: "Terca"), Data(id: 3, dat: "03/02", dia: "Quarta"), Data(id: 4, dat: "04/02", dia: "Quinta"), Data(id: 5, dat: "05/02", dia: "Sexta"), Data(id: 6, dat: "06/02", dia: "Sabado"), Data(id: 7, dat: "07/02", dia: "Domingo")]
+
+struct dadosDormir {
+    var horasAcordou: Date?
+    var horasDeitou: Date?
+}
+
+struct refeicao {
+    var horario: Date?
+    var ingredientes: [String]?
+    var preparo: [String]?
+}
+
+struct cronograma {
+    var horario: Date?
+    var descricao: [String]?
+}
+
+struct tumtum {
+    var horarioInicio: Int?
+    var horarioFim: Int?
+    var valor: Double?
+}
+
+struct planejamento {
+    var cafeManha: refeicao?
+    var almoco: refeicao?
+    var jantar: refeicao?
+    var treino: cronograma?
+}
+
+struct dados {
+    var dia: Date?
+    var agua: Bool?
+    var sono: dadosDormir?
+    var batimentos: tumtum?
+    var peso: Double?
+    var metasDiarias: planejamento?
+}
+
+struct pessoa: Decodable {
+    var registroPesos: [Bool]?
+    var pesoMes: Double?
+    var aguaTotal: Int?
+    var dadosTotais: [dados]?
+}
