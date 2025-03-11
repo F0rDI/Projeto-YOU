@@ -3,189 +3,293 @@ import SwiftUI
 struct Home: View {
     // Controla o índice do dia atual (qual card mostrar)
     @State var scrollIndex: Int = 0
+    @StateObject var vm = ModelView()
     
     // Controla qual card está expandido. Se for nil, nenhum está expandido
     @State private var expandedIndex: Int? = nil
-    @State private var estaEditando: Bool = false 
+    @State private var estaEditando: Bool = false
+    @State private var auxEditar: Bool = false
     @State private var texto: String = "Almoço às 12h30 — Ingredientes: arroz, feijão, frango…"
     
     var body: some View {
-        VStack {
-            // Cabeçalho com o título "MEU DIA"
-            HStack{
-                Text("MEU DIA")
-                    .foregroundColor(.white)
-                    .frame(width: 130)
-                    .font(Font.custom("Arial", size: 20).bold())
-                    .padding()
-                    .background(azul)   // Usa a cor "azul" sem alterar
-                    .padding(.top, 1)
-                    .shadow(color: minhaCor, radius: 5)
-                Spacer()
-                
-            }
-            ScrollView{
-                // Botão "INICIAR O CARDIO"
-                Button(action: {
-                    // Ação para iniciar o cardio
-                }) {
-                    Text("INICIAR O CARDIO")
-                        .padding()
-                        .font(Font.custom("Arial", size: 20).bold())
+        ZStack {
+            // Fundo gradiente
+            LinearGradient(
+                gradient: Gradient(colors: [Color.white.opacity(0.9), Color.white]),
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .ignoresSafeArea()
+            
+            VStack {
+                // Cabeçalho com o título "MEU DIA"
+                HStack{
+                    Text("MEU DIA")
                         .foregroundColor(.white)
-                        .frame(width: 250)
-                        .background(minhaCor) // Usa a cor "minhaCor" sem alterar
-                        .cornerRadius(10)
-                        .padding(.top, 70)
-                        .shadow(color: minhaCor, radius: 10)
+                        .frame(width: 130)
+                        .font(.system(size: 20, weight: .bold, design: .rounded))
+                        .padding()
+                        .background(
+                            RoundedRectangle(cornerRadius: 15)
+                                .fill(azul)
+                                .shadow(color: azul.opacity(0.5), radius: 10, x: 0, y: 5)
+                        )
+                        .padding(.top, 1)
+                    Spacer()
                 }
-                
-                // Layout horizontal: seta esquerda, card atual, seta direita
-                HStack {
-                    // Botão para ir ao dia anterior
-                    Button (action: {
-                        if scrollIndex > 0 {
-                            scrollIndex -= 1
-                        }
+                .padding(.horizontal)
+
+                ScrollView{
+                    // Botão "INICIAR O CARDIO"
+                    Button(action: {
+                        // Ação para iniciar o cardio
                     }) {
-                        Image(systemName: "chevron.left")
-                            .font(.largeTitle)
+                        Text("INICIAR O CARDIO")
+                            .padding()
+                            .font(.system(size: 20, weight: .bold, design: .rounded))
                             .foregroundColor(.white)
-                            .padding(8)
-                            .background(minhaCor)
-                            .clipShape(Circle())
-                            .padding(.leading, 5)
-                            .shadow(color: minhaCor ,radius: 5)
+                            .frame(width: 250)
+                            .background(
+                                LinearGradient(gradient: Gradient(colors: [minhaCor, minhaCor.opacity(0.8)]),
+                                               startPoint: .leading,
+                                               endPoint: .trailing)
+                            )
+                            .cornerRadius(25)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 25)
+                                    .stroke(Color.white, lineWidth: 2)
+                            )
+                            .shadow(color: minhaCor.opacity(0.6), radius: 10, x: 0, y: 5)
                     }
+                    .padding(.top, 70)
                     
-                    // Pegamos o item (dia) correspondente ao scrollIndex atual
-                    let item = arrayData[scrollIndex]
-                    
-                    VStack {
-                        // Parte principal do card (data e dia)
-                        VStack {
-                            Text(item.dat)
-                                .padding(.top, 30)
-                                .font(Font.custom("Impact", size: 40).bold())
+                    // Layout horizontal: seta esquerda, card atual, seta direita
+                    HStack {
+                        // Botão para ir ao dia anterior
+                        Button (action: {
+                            if scrollIndex > 0 {
+                                scrollIndex -= 1
+                            }
+                        }) {
+                            Image(systemName: "chevron.left")
+                                .font(.title)
                                 .foregroundColor(.white)
-                            
-                            HStack {
-                                Spacer()
-                                Text(item.dia)
-                                    .padding()
-                                    .foregroundStyle(azul)
-                                    .font(Font.custom("Arial", size: 30))
-                                //.padding(.bottom, 15)
-                            }
+                                .padding(12)
+                                .background(
+                                    Circle()
+                                        .fill(
+                                            LinearGradient(
+                                                gradient: Gradient(colors: [minhaCor, minhaCor.opacity(0.8)]),
+                                                startPoint: .topLeading,
+                                                endPoint: .bottomTrailing
+                                            )
+                                        )
+                                        .shadow(color: minhaCor.opacity(0.4), radius: 8, x: 0, y: 4)
+                                )
                         }
+                        .padding(.leading, 5)
                         
-                        .onTapGesture {
-                            // Ao tocar, expande/colapsa as infos adicionais
-                            withAnimation {
-                                if expandedIndex == scrollIndex {
-                                    expandedIndex = nil
-                                } else {
-                                    expandedIndex = scrollIndex
-                                }
-                            }
-                        }
+                        // Pegamos o item (dia) correspondente ao scrollIndex atual
+                        let item = arrayData[scrollIndex]
                         
-                        // Se este card estiver expandido, mostra a parte extra
-                        if expandedIndex == scrollIndex {
-                            // Rolagem vertical caso as infos sejam grandes
-                            ScrollView(.vertical, showsIndicators: true) {
-                                VStack(alignment: .leading, spacing: 8) {
-                                    Text("Refeição do dia:")
-                                        .font(.headline)
-                                    HStack{
-                                        if estaEditando {
-                                            TextField("Digite algo", text: $texto, axis: .vertical)
-                                            .textFieldStyle(PlainTextFieldStyle()) // Remove o estilo padrão
-                                            .foregroundColor(minhaCor)
-                                            .padding()
-                                            .frame(height: 150)
-                                            .background(Color.white)
-                                            .cornerRadius(8)
-                                            .onChange(of: texto) {
-                                                estaEditando = false
-                                            }
-                                        } else {
-                                            Text(texto)
-                                                .padding()
-                                        }
-                                        EditButton(isEditing: $estaEditando) // Usando o botão reutilizável
-                                    }
-                                    .animation(.easeInOut, value: estaEditando)
+                        ZStack {
+                            // Fundo do Card
+                            RoundedRectangle(cornerRadius: 20)
+                                .fill(
+                                    LinearGradient(
+                                        gradient: Gradient(colors: [minhaCor, minhaCor.opacity(0.8)]),
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    )
+                                )
+                                .shadow(color: minhaCor.opacity(0.6), radius: 15, x: 0, y: 8)
+                                
+                            VStack {
+                                // Parte principal do card (data e dia)
+                                VStack {
+                                    Text(item.dat)
+                                        .padding(.top, 30)
+                                        .font(.system(size: 40, weight: .heavy))
+                                        .foregroundColor(.white)
                                     
-                                    Text("Almoço às 12h30 — Ingredientes: arroz, feijão, frango…")
-                                    Text("Lanche às 16h — Ingredientes: frutas, iogurte…")
-                                    Text("Jantar às 20h — Ingredientes: salada, peixe…")
-                                    // Adicione mais linhas conforme necessário
+                                    HStack {
+                                        Spacer()
+                                        Text(item.dia)
+                                            .padding()
+                                            .foregroundStyle(Color.white.opacity(0.9))
+                                            .font(.system(size: 30, weight: .medium, design: .rounded))
+                                            .padding(.trailing, 10)
+                                    }
                                 }
-                                .padding()
-                                .foregroundColor(.white)
+                                .onTapGesture {
+                                    // Ao tocar, expande/colapsa as infos adicionais
+                                    withAnimation(.spring()) {
+                                        if expandedIndex == scrollIndex {
+                                            expandedIndex = nil
+                                        } else {
+                                            expandedIndex = scrollIndex
+                                        }
+                                    }
+                                }
+                                
+                                // Se este card estiver expandido, mostra a parte extra
+                                if expandedIndex == scrollIndex {
+                                    // Rolagem vertical caso as infos sejam grandes
+                                    ScrollView(.vertical, showsIndicators: true) {
+                                        VStack(alignment: .leading, spacing: 12) {
+                                            Text("Refeição do dia:")
+                                                .font(.system(size: 18, weight: .bold, design: .rounded))
+                                                .foregroundColor(.white)
+                                                .padding(.bottom, 5)
+                                            
+                                            HStack{
+                                                if estaEditando {
+                                                    TextField("Digite algo", text: $texto, axis: .vertical)
+                                                        .textFieldStyle(PlainTextFieldStyle())
+                                                        .foregroundColor(minhaCor)
+                                                        .padding()
+                                                        .frame(height: 150)
+                                                        .background(
+                                                            RoundedRectangle(cornerRadius: 12)
+                                                                .fill(Color.white)
+                                                                .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
+                                                        )
+                                                        .onChange(of: auxEditar) {
+                                                            estaEditando = false
+                                                        }
+                                                } else {
+                                                    Text(texto)
+                                                        .padding()
+                                                        .background(Color.white.opacity(0.15))
+                                                        .cornerRadius(12)
+                                                }
+                                                
+                                                EditButton(isEditing: $estaEditando, Aux: $auxEditar)
+                                            }
+                                            .animation(.easeInOut, value: estaEditando)
+                                            
+                                            Group {
+                                                MealItem(time: "12h30", meal: "Almoço", ingredients: "arroz, feijão, frango")
+                                                MealItem(time: "16h00", meal: "Lanche", ingredients: "frutas, iogurte")
+                                                MealItem(time: "20h00", meal: "Jantar", ingredients: "salada, peixe")
+                                            }
+                                        }
+                                        .padding()
+                                        .foregroundColor(.white)
+                                    }
+                                    .frame(minHeight: 100) // Limita a altura do "popup"
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 15)
+                                            .fill(azul.opacity(0.9))
+                                            .shadow(color: azul.opacity(0.3), radius: 8, x: 0, y: 4)
+                                    )
+                                    .padding(.horizontal, 10)
+                                    .padding(.bottom, 10)
+                                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                                }
                             }
-                            .frame(minHeight: 100) // Limita a altura do "popup"
-                            .background(azul.opacity(0.9))
-                            .cornerRadius(8)
-                            .transition(.move(edge: .bottom))
                         }
-                    }
-                    
-                    .frame(width: 240)           // Largura fixa do card
-                    .background(minhaCor)
-                    .cornerRadius(10)
-                    .shadow(color: minhaCor, radius: 3)
-                    .padding(.bottom, expandedIndex == scrollIndex ? 20 : 0)
-                    
-                    // Botão para ir ao próximo dia
-                    Button (action: {
-                        if scrollIndex < arrayData.count - 1 {
-                            scrollIndex += 1
+                        .frame(width: 240)
+                        .padding(.bottom, expandedIndex == scrollIndex ? 20 : 0)
+                        
+                        // Botão para ir ao próximo dia
+                        Button (action: {
+                            if scrollIndex < arrayData.count - 1 {
+                                scrollIndex += 1
+                            }
+                        }) {
+                            Image(systemName: "chevron.right")
+                                .font(.title)
+                                .foregroundColor(.white)
+                                .padding(12)
+                                .background(
+                                    Circle()
+                                        .fill(
+                                            LinearGradient(
+                                                gradient: Gradient(colors: [minhaCor, minhaCor.opacity(0.8)]),
+                                                startPoint: .topLeading,
+                                                endPoint: .bottomTrailing
+                                            )
+                                        )
+                                        .shadow(color: minhaCor.opacity(0.4), radius: 8, x: 0, y: 4)
+                                )
                         }
-                    }) {
-                        Image(systemName: "chevron.right")
-                            .font(.largeTitle)
-                            .foregroundColor(.white)
-                            .padding(8)
-                            .background(minhaCor)
-                            .clipShape(Circle())
-                            .padding(5)
-                            .shadow(color: minhaCor ,radius: 5)
+                        .padding(5)
                     }
-                }
-                .padding(.top, 70)
-                
-                Spacer()
-                Button("ENVIAR") {
-                    /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Action@*/ /*@END_MENU_TOKEN@*/
-                }.foregroundColor(.white)
-                    .frame(width: 130)
-                    .font(Font.custom("Arial", size: 20).bold())
+                    .padding(.top, 70)
+                    
+                    Spacer()
+                    
+                    Button("ENVIAR") {
+                        /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Action@*/ /*@END_MENU_TOKEN@*/
+                    }
+                    .foregroundColor(.white)
+                    .frame(width: 150)
+                    .font(.system(size: 20, weight: .bold, design: .rounded))
                     .padding()
-                    .background(Color.red)   // Usa a cor "azul" sem alterar
-                    .padding(.bottom, 2)
-                    .shadow(color: minhaCor, radius: 5)
+                    .background(
+                        LinearGradient(gradient: Gradient(colors: [azul, azul.opacity(0.8)]),
+                                       startPoint: .leading,
+                                       endPoint: .trailing)
+                            .cornerRadius(15)
+                            .shadow(color: azul.opacity(0.5), radius: 10, x: 0, y: 5)
+                    )
+                    .padding(.bottom, 20)
+                    .padding(.top, 40)
+                }
             }
         }
+    }
+}
+
+// Componente para exibir informações da refeição de forma mais organizada
+struct MealItem: View {
+    var time: String
+    var meal: String
+    var ingredients: String
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 5) {
+            HStack {
+                Text(meal)
+                    .font(.system(size: 16, weight: .semibold))
+                Text("às \(time)")
+                    .font(.system(size: 16))
+            }
+            .foregroundColor(.white)
+            
+            Text("Ingredientes: \(ingredients)")
+                .font(.system(size: 14))
+                .foregroundColor(.white.opacity(0.9))
+                .padding(.leading, 5)
+        }
+        .padding(.vertical, 8)
+        .padding(.horizontal, 12)
+        .background(Color.white.opacity(0.15))
+        .cornerRadius(10)
     }
 }
 
 struct EditButton: View {
-    @Binding var isEditing: Bool // Controle de edição externo
-
+    @Binding var isEditing: Bool
+    @Binding var Aux: Bool
     var body: some View {
         Button(action: {
             isEditing.toggle()
+            Aux.toggle()
         }) {
             Image(systemName: isEditing ? "checkmark.circle.fill" : "pencil")
                 .foregroundColor(.white)
-                .padding()
+                .padding(10)
+                .background(
+                    Circle()
+                        .fill(azul)
+                        .shadow(color: azul.opacity(0.5), radius: 5, x: 0, y: 3)
+                )
         }
     }
 }
 
-// Preview somente para teste no Canvas do Xcode
 #Preview {
     Home()
 }
