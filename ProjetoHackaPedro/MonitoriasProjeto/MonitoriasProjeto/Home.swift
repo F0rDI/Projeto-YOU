@@ -1,4 +1,46 @@
 import SwiftUI
+import Foundation    
+
+func enviarDadosParaServidor(pessoa: pessoa) {
+    // URL correta do servidor Node-RED
+    guard let url = URL(string: "http://127.0.0.1:1880/uploadPessoa78") else {
+        print("URL inválida")
+        return
+    }
+    
+    // Codificando os dados como JSON
+    do {
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .iso8601  // Caso tenha datas no formato ISO 8601
+        let jsonData = try encoder.encode(pessoa)
+        
+        // Criando o request
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = jsonData
+        
+        // Enviando a requisição
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Erro na requisição: \(error.localizedDescription)")
+                return
+            }
+            
+            if let data = data, let response = response as? HTTPURLResponse, response.statusCode == 200 {
+                // Aqui você pode processar a resposta, se necessário
+                print("Dados enviados com sucesso: \(String(data: data, encoding: .utf8) ?? "")")
+            } else {
+                print("Falha ao enviar os dados.")
+            }
+        }
+        
+        // Iniciando a tarefa
+        task.resume()
+    } catch {
+        print("Erro ao codificar os dados: \(error.localizedDescription)")
+    }
+}
 
 struct Home: View {
     // Controla o índice do dia atual (qual card mostrar)
@@ -10,6 +52,9 @@ struct Home: View {
     @State private var estaEditando: Bool = false
     @State private var auxEditar: Bool = false
     @State private var texto: String = "Almoço às 12h30 — Ingredientes: arroz, feijão, frango…"
+     @State var pessoaExemplo = pessoa(pesoMes: 70.0, aguaTotal: 2, dadosTotais: [
+        dados(dia: Date(), agua: true, sono: dadosDormir(horasAcordou: Date(), horasDeitou: Date()), batimentos: tumtum(horarioInicio: Date(), horarioFim: Date(), valor: 75), peso: 70.5, metasDiarias: planejamento(cafeManha: refeicao(horario: Date(), ingredientes: "Frango", preparo: "Frito"), almoco: refeicao(horario: Date(), ingredientes: "Arroz e feijão", preparo: "Cozido"), jantar: refeicao(horario: Date(), ingredientes: "Peixe", preparo: "Assado"), treino: cronograma(horario: Date(), descricao: "Treino de pernas")))])
+    
     
     var body: some View {
         ZStack {
@@ -36,6 +81,19 @@ struct Home: View {
                         )
                         .padding(.top, 1)
                     Spacer()
+                    Button("ENVIAR") {
+                // dados aleatorios
+                            
+                // Enviar os dados para o servidor
+                enviarDadosParaServidor(pessoa: pessoaExemplo)
+            }
+            .foregroundColor(.white)
+            .frame(width: 130)
+            .font(Font.custom("Arial", size: 20).bold())
+            .padding()
+            .background(Color.red)   // Usa a cor "azul" sem alterar
+            .padding(.top, 1)
+            .shadow(color: minhaCor, radius: 5)
                 }
                 .padding(.horizontal)
 
