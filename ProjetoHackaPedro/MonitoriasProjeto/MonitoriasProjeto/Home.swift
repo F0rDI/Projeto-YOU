@@ -11,6 +11,7 @@ struct Home: View {
         VStack {
             // Cabeçalho com o título "MEU DIA"
             HStack {
+                
                 Text("MEU DIA")
                     .foregroundColor(.white)
                     .frame(width: 130)
@@ -20,6 +21,16 @@ struct Home: View {
                     .padding(.top, 1)
                     .shadow(color: minhaCor, radius: 5)
                 Spacer()
+                Button("ENVIAR") {
+                    /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Action@*/ /*@END_MENU_TOKEN@*/
+                }.foregroundColor(.white)
+                    .frame(width: 130)
+                    .font(Font.custom("Arial", size: 20).bold())
+                    .padding()
+                    .background(Color.red)   // Usa a cor "azul" sem alterar
+                    .padding(.top, 1)
+                    .shadow(color: minhaCor, radius: 5)
+            
             }
             
             // Botão "INICIAR O CARDIO"
