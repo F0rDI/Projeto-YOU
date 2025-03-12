@@ -35,21 +35,18 @@ struct dados {
     
     var horarioCafe: Int?
     var ingredientesCafe: String?
-    var preparoCafe: String?
     
     var horarioAlmo: Int?
     var ingredientesAlmo: String?
-    var preparoAlmo: String?
     
     var horarioJantar: Int?
     var ingredientesJantar: String?
-    var preparoJantar: String?
     
     var horarioTreino: Int?
     var descricaoTreino: String?
 }
 
-struct pessoa: Codable {
+struct pessoa: Decodable, Hashable {
     var _id: String?         // Agora _id tem tipo definido
     var pesoMes: Double?
     var aguaTotal: Int?
