@@ -47,7 +47,8 @@ struct dados {
 }
 
 struct pessoa: Decodable, Hashable {
-    var _id: String?         // Agora _id tem tipo definido
+    var _id: String? // Agora _id tem tipo definido
+    var _rev: String?
     var pesoMes: Double?
     var aguaTotal: Int?
     var dadosTotais: [dados]?
