@@ -1,18 +1,28 @@
 //
 //  ModelView.swift
-//  ProjetoYOU
+//  temp
 //
-//  Created by Turma02-6 on 12/03/25.
+//  Created by Turma02-Backup on 11/03/25.
 //
 
-import SwiftUI
+import Foundation
 
-struct ModelView: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-    }
-}
-
-#Preview {
-    ModelView()
+class ModelView : ObservableObject {
+    @Published var dadosPessoais: [pessoa] = []
+        
+        
+        func fetch(){
+            let url = "http://127.0.0.1:1880/teste"
+            
+            let task = URLSession.shared.dataTask(with: URL(string: url)!){ dados, _, error in
+                
+                do {
+                    self.dadosPessoais = try JSONDecoder().decode([pessoa].self, from: dados!)
+                } catch {
+                    print (error)
+                }
+                
+            }
+            task.resume()
+        }
 }
