@@ -1,7 +1,6 @@
 import SwiftUI
 import Foundation
 
-
 func enviarDadosParaServidor(pessoa: pessoa) {
     // URL correta do servidor Node-RED
     guard let url = URL(string: "http://127.0.0.1:1880/uploadPessoa78") else {
@@ -52,10 +51,8 @@ struct Home: View {
     @State private var estaEditando: Bool = false
     @State private var auxEditar: Bool = false
     @State private var texto: String = "Almoço às 12h30 — Ingredientes: arroz, feijão, frango…"
-    @State var pessoaExemplo = pessoa(pesoMes: 70.0, aguaTotal: 2, dadosTotais: [
-       dados(dia: Date(), agua: true, sono: dadosDormir(horasAcordou: Date(), horasDeitou: Date()), batimentos: tumtum(horarioInicio: Date(), horarioFim: Date(), valor: 75), peso: 70.5, metasDiarias: planejamento(cafeManha: refeicao(horario: Date(), ingredientes: "Frango", preparo: "Frito"), almoco: refeicao(horario: Date(), ingredientes: "Arroz e feijão", preparo: "Cozido"), jantar: refeicao(horario: Date(), ingredientes: "Peixe", preparo: "Assado"), treino: cronograma(horario: Date(), descricao: "Treino de pernas")))])
-   
-   
+    @StateObject var vm = ModelView()
+    
     var body: some View {
         ZStack {
             // Fundo gradiente
@@ -182,45 +179,47 @@ struct Home: View {
                                     // Rolagem vertical caso as infos sejam grandes
                                     ScrollView(.vertical, showsIndicators: true) {
                                         VStack(alignment: .leading, spacing: 12) {
-                                            Text("Refeição do dia:")
-                                                .font(.system(size: 18, weight: .bold, design: .rounded))
-                                                .foregroundColor(.white)
-                                                .padding(.bottom, 5)
-                                            
-                                            HStack{
-                                                if estaEditando {
-                                                    TextField("Digite algo", text: $texto, axis: .vertical)
-                                                        .textFieldStyle(PlainTextFieldStyle())
-                                                        .foregroundColor(minhaCor)
-                                                        .padding()
-                                                        .frame(height: 150)
-                                                        .background(
-                                                            RoundedRectangle(cornerRadius: 12)
-                                                                .fill(Color.white)
-                                                                .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
-                                                        )
-                                                        .onChange(of: auxEditar) {
-                                                            estaEditando = false
+                                                    Text("Refeição do dia:")
+                                                        .font(.system(size: 18, weight: .bold, design: .rounded))
+                                                        .foregroundColor(.white)
+                                                        .padding(.bottom, 5)
+                                                    
+                                                    HStack{
+                                                        if estaEditando {
+                                                            TextField("Digite algo", text: $texto, axis: .vertical)
+                                                                .textFieldStyle(PlainTextFieldStyle())
+                                                                .foregroundColor(minhaCor)
+                                                                .padding()
+                                                                .frame(height: 150)
+                                                                .background(
+                                                                    RoundedRectangle(cornerRadius: 12)
+                                                                        .fill(Color.white)
+                                                                        .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
+                                                                )
+                                                                .onChange(of: auxEditar) {
+                                                                    estaEditando = false
+                                                                }
+                                                        } else {
+                                                            Text(texto)
+                                                                .padding()
+                                                                .background(Color.white.opacity(0.15))
+                                                                .cornerRadius(12)
                                                         }
-                                                } else {
-                                                    Text(texto)
-                                                        .padding()
-                                                        .background(Color.white.opacity(0.15))
-                                                        .cornerRadius(12)
+                                                        
+                                                        EditButton(isEditing: $estaEditando, Aux: $auxEditar)
+                                                    }
+                                                    .animation(.easeInOut, value: estaEditando)
+                                                    
+                                                    Group {
+                                                        MealItem(time: "12h30", meal: "Almoço", ingredients: "arroz, feijão, frango")
+                                                        MealItem(time: "16h00", meal: "Lanche", ingredients: "frutas, iogurte")
+                                                        MealItem(time: "20h00", meal: "Jantar", ingredients: "salada, peixe")
+                                                    }
                                                 }
-                                                
-                                                EditButton(isEditing: $estaEditando, Aux: $auxEditar)
-                                            }
-                                            .animation(.easeInOut, value: estaEditando)
-                                            
-                                            Group {
-                                                MealItem(time: "12h30", meal: "Almoço", ingredients: "arroz, feijão, frango")
-                                                MealItem(time: "16h00", meal: "Lanche", ingredients: "frutas, iogurte")
-                                                MealItem(time: "20h00", meal: "Jantar", ingredients: "salada, peixe")
-                                            }
-                                        }
-                                        .padding()
-                                        .foregroundColor(.white)
+                                                .padding()
+                                                .foregroundColor(.white)
+//                                            }
+//                                        }
                                     }
                                     .frame(minHeight: 100) // Limita a altura do "popup"
                                     .background(
@@ -266,7 +265,7 @@ struct Home: View {
                     Spacer()
                     
                     Button("ENVIAR") {
-                        enviarDadosParaServidor(pessoa: pessoaExemplo)
+                        /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Action@*/ /*@END_MENU_TOKEN@*/
                     }
                     .foregroundColor(.white)
                     .frame(width: 150)
