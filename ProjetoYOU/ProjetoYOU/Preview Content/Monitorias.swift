@@ -45,12 +45,14 @@ struct Monitorias: View {
                                 )
                             }
                             
-                            // Item de monitoramento: Batimentos cardíacos
-                            monitoringItem(
-                                icon: "suit.heart.fill",
-                                text: "Média de batimentos",
-                                iconColor: .red
-                            )
+                            // Item de monitoramento: Batimentos cardíacos com navegação
+                            NavigationLink(destination: HeartRateMonitorView()) {
+                                monitoringItem(
+                                    icon: "suit.heart.fill",
+                                    text: "Média de batimentos",
+                                    iconColor: .red
+                                )
+                            }
                             
                             // Item de monitoramento: Peso
                             monitoringItem(
