@@ -6,87 +6,94 @@ struct Monitorias: View {
     let azul = Color.blue.opacity(0.8)
     
     var body: some View {
-        ZStack {
-            // Fundo gradiente igual ao da tela de Água
-            LinearGradient(
-                gradient: Gradient(colors: [Color.white.opacity(0.9), Color.white]),
-                startPoint: .top,
-                endPoint: .bottom
-            )
-            .ignoresSafeArea()
-            
-            VStack {
-                // Cabeçalho "MONITORAMENTO" no mesmo estilo do "ÁGUA"
-                HStack {
-                    Text("MONITORAMENTO")
-                        .foregroundColor(.white)
-                        .frame(width: 200)
-                        .font(.system(size: 20, weight: .bold, design: .rounded))
-                        .padding()
-                        .background(
-                            RoundedRectangle(cornerRadius: 15)
-                                .fill(azul)
-                                .shadow(color: azul.opacity(0.5), radius: 10, x: 0, y: 5)
-                        )
-                        .padding(.top, 1)
-                    Spacer()
-                }
-                .padding(.horizontal)
+        NavigationView {
+            ZStack {
+                // Fundo gradiente igual ao da tela de Água
+                LinearGradient(
+                    gradient: Gradient(colors: [Color.white.opacity(0.9), Color.white]),
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+                .ignoresSafeArea()
                 
-                ScrollView(.vertical, showsIndicators: false) {
-                    VStack(spacing: 20) {
-                        // Item de monitoramento: Sono
-                        monitoringItem(
-                            icon: "powersleep",
-                            text: "Sono",
-                            iconColor: .yellow
-                        )
-                        
-                        // Item de monitoramento: Batimentos cardíacos
-                        monitoringItem(
-                            icon: "suit.heart.fill",
-                            text: "Média de batimentos",
-                            iconColor: .red
-                        )
-                        
-                        // Item de monitoramento: Peso
-                        monitoringItem(
-                            icon: "scalemass.fill",
-                            text: "Peso atual",
-                            iconColor: .white
-                        )
-                        
-                        // Item de monitoramento: Água
-                        monitoringItem(
-                            icon: "drop.fill",
-                            text: "Meta de Água",
-                            iconColor: azul
-                        )
-                        
-                        // Botão "ATUALIZAR" no mesmo estilo do "SALVAR" da tela de Água
-                        Button("ATUALIZAR") {
-                            // Ação para atualizar os dados de monitoramento
-                        }
-                        .foregroundColor(.white)
-                        .frame(width: 150)
-                        .font(.system(size: 20, weight: .bold, design: .rounded))
-                        .padding()
-                        .background(
-                            LinearGradient(
-                                gradient: Gradient(colors: [azul, azul.opacity(0.8)]),
-                                startPoint: .leading,
-                                endPoint: .trailing
+                VStack {
+                    // Cabeçalho "MONITORAMENTO" no mesmo estilo do "ÁGUA"
+                    HStack {
+                        Text("MONITORAMENTO")
+                            .foregroundColor(.white)
+                            .frame(width: 180)
+                            .font(.system(size: 20, weight: .bold, design: .rounded))
+                            .padding()
+                            .background(
+                                RoundedRectangle(cornerRadius: 15)
+                                    .fill(azul)
+                                    .shadow(color: azul.opacity(0.5), radius: 10, x: 0, y: 5)
                             )
-                            .cornerRadius(15)
-                        )
-                        .shadow(color: azul.opacity(0.5), radius: 8, x: 0, y: 4)
-                        .padding(.top, 30)
-                        .padding(.bottom, 20)
+                            .padding(.top, 1)
+                        Spacer()
                     }
-                    .padding(.top, 20)
                     .padding(.horizontal)
+                    
+                    ScrollView(.vertical, showsIndicators: false) {
+                        VStack(spacing: 20) {
+                            // Item de monitoramento: Sono com navegação
+                            NavigationLink(destination: SonoPrototipo()) {
+                                monitoringItem(
+                                    icon: "powersleep",
+                                    text: "Sono",
+                                    iconColor: .yellow
+                                )
+                            }
+                            
+                            // Item de monitoramento: Batimentos cardíacos
+                            monitoringItem(
+                                icon: "suit.heart.fill",
+                                text: "Média de batimentos",
+                                iconColor: .red
+                            )
+                            
+                            // Item de monitoramento: Peso
+                            monitoringItem(
+                                icon: "scalemass.fill",
+                                text: "Peso atual",
+                                iconColor: .green
+                            )
+                            
+                            // Item de monitoramento: Água com navegação
+                            NavigationLink(destination: RegistroAgua()) {
+                                monitoringItem(
+                                    icon: "drop.fill",
+                                    text: "Meta de Água",
+                                    iconColor: .white
+                                )
+                            }
+                            
+                            // Botão "ATUALIZAR" no mesmo estilo do "SALVAR" da tela de Água
+                            Button("ATUALIZAR") {
+                                // Ação para atualizar os dados de monitoramento
+                            }
+                            .foregroundColor(.white)
+                            .frame(width: 150)
+                            .font(.system(size: 20, weight: .bold, design: .rounded))
+                            .padding()
+                            .background(
+                                LinearGradient(
+                                    gradient: Gradient(colors: [azul, azul.opacity(0.8)]),
+                                    startPoint: .leading,
+                                    endPoint: .trailing
+                                )
+                                .cornerRadius(15)
+                            )
+                            .shadow(color: azul.opacity(0.5), radius: 8, x: 0, y: 4)
+                            .padding(.top, 30)
+                            .padding(.bottom, 20)
+                        }
+                        .padding(.top, 20)
+                        .padding(.horizontal)
+                    }
                 }
             }
+            .navigationBarHidden(true)
         }
     }
     
