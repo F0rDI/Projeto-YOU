@@ -51,6 +51,15 @@ struct Home: View {
     @State private var estaEditando: Bool = false
     @State private var auxEditar: Bool = false
     @State private var texto: String = "Almoço às 12h30 — Ingredientes: arroz, feijão, frango…"
+
+//"Café da manhã às 7h30 — Ingredientes: ovos mexidos, torrada, suco de maçã, mamão."
+//"Almoço às 13h00 — Ingredientes: arroz integral, feijão preto, carne moída, brócolis cozido, salada de rúcula."
+//"Jantar às 19h30 — Ingredientes: filé de peixe grelhado, purê de batata-doce, salada de cenoura e pepino, água com gás."
+
+//"Café da manhã às 6h45 — Ingredientes: aveia com mel, frutas vermelhas, café preto."
+//"Almoço às 12h00 — Ingredientes: macarrão integral, molho de tomate caseiro, peito de frango grelhado, salada de espinafre."
+//"Jantar às 20h00 — Ingredientes: arroz de couve-flor, bife de carne de panela, legumes no vapor, chá verde."
+    
     @StateObject var vm = ModelView()
     
     var body: some View {
