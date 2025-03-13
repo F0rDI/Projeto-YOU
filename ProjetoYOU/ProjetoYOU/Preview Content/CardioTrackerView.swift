@@ -10,193 +10,195 @@ struct CardioTrackerView: View {
     @Environment(\.presentationMode) var presentationMode
     
     var body: some View {
-        ZStack {
-            // Background
-            LinearGradient(
-                gradient: Gradient(colors: [Color.white.opacity(0.9), Color.white]),
-                startPoint: .top,
-                endPoint: .bottom
-            )
-            .ignoresSafeArea()
-            
-            VStack(spacing: 20) {
-                // Header
-                HStack {
-                    Text("CARDIO")
-                        .foregroundColor(.white)
-                        .frame(width: 130)
-                        .font(.system(size: 20, weight: .bold, design: .rounded))
-                        .padding()
-                        
-                        .background(
-                            RoundedRectangle(cornerRadius: 15)
-                                .fill(Color.blue.opacity(0.8))
-                                .shadow(color: Color.blue.opacity(0.5), radius: 10, x: 0, y: 5)
-                        )
-                        .padding(.top, 50)
-                    Spacer()
-                }
-                .padding(.horizontal)
-                
-                // Timer display
-                ZStack {
-                    Circle()
-                        .fill(
-                            LinearGradient(
-                                gradient: Gradient(colors: [Color.blue, Color.blue.opacity(0.8)]),
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            )
-                        )
-                        .frame(width: 200, height: 200)
-                        .shadow(color: Color.blue.opacity(0.6), radius: 15, x: 0, y: 8)
-                    
-                    VStack {
-                        Text(timeString(time: elapsedTime))
-                            .font(.system(size: 40, weight: .bold, design: .rounded))
-                            .foregroundColor(.white)
-                        
-                        if heartRateValues.count > 0 {
-                            Text("\(heartRateValues.count) registros")
-                                .font(.system(size: 16, weight: .medium, design: .rounded))
-                                .foregroundColor(.white.opacity(0.9))
-                        }
-                    }
-                }
-                .padding(.top, 30)
-                
-                // Control buttons
-                HStack(spacing: 20) {
-                    Button(action: {
-                        if isRunning {
-                            stopTimer()
-                        } else {
-                            startTimer()
-                        }
-                    }) {
-                        Text(isRunning ? "PAUSAR" : "INICIAR")
-                            .font(.system(size: 18, weight: .bold, design: .rounded))
-                            .foregroundColor(.white)
-                            .padding(.vertical, 12)
-                            .padding(.horizontal, 20)
-                            .background(
-                                RoundedRectangle(cornerRadius: 20)
-                                    .fill(isRunning ? Color.orange : Color.green)
-                                    .shadow(color: isRunning ? Color.orange.opacity(0.5) : Color.green.opacity(0.5), radius: 5, x: 0, y: 3)
-                            )
-                    }
-                    
-                    Button(action: {
-                        resetTimer()
-                    }) {
-                        Text("REINICIAR")
-                            .font(.system(size: 18, weight: .bold, design: .rounded))
-                            .foregroundColor(.white)
-                            .padding(.vertical, 12)
-                            .padding(.horizontal, 20)
-                            .background(
-                                RoundedRectangle(cornerRadius: 20)
-                                    .fill(Color.red)
-                                    .shadow(color: Color.red.opacity(0.5), radius: 5, x: 0, y: 3)
-                            )
-                    }
-                }
-                .padding(.top, 20)
-                
-                // Heart rate input section
-                VStack(spacing: 15) {
-                    Text("REGISTRAR BATIMENTOS")
-                        .font(.system(size: 18, weight: .bold, design: .rounded))
-                        .foregroundColor(Color.blue)
-                    
-                    HStack {
-                        TextField("BPM", text: $heartRateInput)
-                            .keyboardType(.numberPad)
-                            .padding()
-                            .background(Color.white)
-                            .cornerRadius(10)
-                            .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
-                            .frame(width: 150)
-                        
-                        Button(action: {
-                            addHeartRate()
-                        }) {
-                            Image(systemName: "plus.circle.fill")
-                                .font(.system(size: 28))
-                                .foregroundColor(Color.blue)
-                        }
-                    }
-                }
-                .padding()
-                .background(
-                    RoundedRectangle(cornerRadius: 15)
-                        .fill(Color.white.opacity(0.9))
-                        .shadow(color: Color.black.opacity(0.2), radius: 8, x: 0, y: 4)
+        ScrollView{
+            ZStack {
+                // Background
+                LinearGradient(
+                    gradient: Gradient(colors: [Color.white.opacity(0.9), Color.white]),
+                    startPoint: .top,
+                    endPoint: .bottom
                 )
-                .padding(.horizontal)
-                .padding(.top, 10)
+                .ignoresSafeArea()
                 
-                // Heart rate values list
-                if !heartRateValues.isEmpty {
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 10) {
-                            ForEach(heartRateValues.indices, id: \.self) { index in
-                                Text("\(heartRateValues[index]) BPM")
-                                    .font(.system(size: 14, weight: .medium))
-                                    .padding(.vertical, 8)
-                                    .padding(.horizontal, 15)
-                                    .background(
-                                        Capsule()
-                                            .fill(Color.blue.opacity(0.2))
-                                    )
-                                    .overlay(
-                                        Capsule()
-                                            .stroke(Color.blue.opacity(0.5), lineWidth: 1)
-                                    )
+                VStack(spacing: 20) {
+                    // Header
+                    HStack {
+                        Text("CARDIO")
+                            .foregroundColor(.white)
+                            .frame(width: 130)
+                            .font(.system(size: 20, weight: .bold, design: .rounded))
+                            .padding()
+                        
+                            .background(
+                                RoundedRectangle(cornerRadius: 15)
+                                    .fill(Color.blue.opacity(0.8))
+                                    .shadow(color: Color.blue.opacity(0.5), radius: 10, x: 0, y: 5)
+                            )
+                            .padding(.top, 50)
+                        Spacer()
+                    }
+                    .padding(.horizontal)
+                    
+                    // Timer display
+                    ZStack {
+                        Circle()
+                            .fill(
+                                LinearGradient(
+                                    gradient: Gradient(colors: [Color.blue, Color.blue.opacity(0.8)]),
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
+                            )
+                            .frame(width: 200, height: 200)
+                            .shadow(color: Color.blue.opacity(0.6), radius: 15, x: 0, y: 8)
+                        
+                        VStack {
+                            Text(timeString(time: elapsedTime))
+                                .font(.system(size: 40, weight: .bold, design: .rounded))
+                                .foregroundColor(.white)
+                            
+                            if heartRateValues.count > 0 {
+                                Text("\(heartRateValues.count) registros")
+                                    .font(.system(size: 16, weight: .medium, design: .rounded))
+                                    .foregroundColor(.white.opacity(0.9))
                             }
                         }
-                        .padding(.horizontal)
                     }
-                    .frame(height: 50)
-                }
-                
-                // Finish button
-                Button(action: {
-                    if heartRateValues.isEmpty {
-                        showAlert = true
-                    } else {
-                        finishCardio()
+                    .padding(.top, 30)
+                    
+                    // Control buttons
+                    HStack(spacing: 20) {
+                        Button(action: {
+                            if isRunning {
+                                stopTimer()
+                            } else {
+                                startTimer()
+                            }
+                        }) {
+                            Text(isRunning ? "PAUSAR" : "INICIAR")
+                                .font(.system(size: 18, weight: .bold, design: .rounded))
+                                .foregroundColor(.white)
+                                .padding(.vertical, 12)
+                                .padding(.horizontal, 20)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 20)
+                                        .fill(isRunning ? Color.orange : Color.green)
+                                        .shadow(color: isRunning ? Color.orange.opacity(0.5) : Color.green.opacity(0.5), radius: 5, x: 0, y: 3)
+                                )
+                        }
+                        
+                        Button(action: {
+                            resetTimer()
+                        }) {
+                            Text("REINICIAR")
+                                .font(.system(size: 18, weight: .bold, design: .rounded))
+                                .foregroundColor(.white)
+                                .padding(.vertical, 12)
+                                .padding(.horizontal, 20)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 20)
+                                        .fill(Color.red)
+                                        .shadow(color: Color.red.opacity(0.5), radius: 5, x: 0, y: 3)
+                                )
+                        }
                     }
-                }) {
-                    Text("FINALIZAR CARDIO")
-                        .foregroundColor(.white)
-                        .frame(width: 200)
-                        .font(.system(size: 20, weight: .bold, design: .rounded))
-                        .padding()
-                        .background(
-                            LinearGradient(
-                                gradient: Gradient(colors: [Color.blue, Color.blue.opacity(0.8)]),
-                                startPoint: .leading,
-                                endPoint: .trailing
-                            )
-                            .cornerRadius(15)
-                            .shadow(color: Color.blue.opacity(0.5), radius: 10, x: 0, y: 5)
-                        )
-                }
-                .padding(.top, 20)
-                .alert(isPresented: $showAlert) {
-                    Alert(
-                        title: Text("Sem Registros"),
-                        message: Text("Você precisa registrar pelo menos um valor de batimento cardíaco."),
-                        dismissButton: .default(Text("OK"))
+                    .padding(.top, 20)
+                    
+                    // Heart rate input section
+                    VStack(spacing: 15) {
+                        Text("REGISTRAR BATIMENTOS")
+                            .font(.system(size: 18, weight: .bold, design: .rounded))
+                            .foregroundColor(Color.blue)
+                        
+                        HStack {
+                            TextField("BPM", text: $heartRateInput)
+                                .keyboardType(.numberPad)
+                                .padding()
+                                .background(Color.white)
+                                .cornerRadius(10)
+                                .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
+                                .frame(width: 150)
+                            
+                            Button(action: {
+                                addHeartRate()
+                            }) {
+                                Image(systemName: "plus.circle.fill")
+                                    .font(.system(size: 28))
+                                    .foregroundColor(Color.blue)
+                            }
+                        }
+                    }
+                    .padding()
+                    .background(
+                        RoundedRectangle(cornerRadius: 15)
+                            .fill(Color.white.opacity(0.9))
+                            .shadow(color: Color.black.opacity(0.2), radius: 8, x: 0, y: 4)
                     )
+                    .padding(.horizontal)
+                    .padding(.top, 10)
+                    
+                    // Heart rate values list
+                    if !heartRateValues.isEmpty {
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: 10) {
+                                ForEach(heartRateValues.indices, id: \.self) { index in
+                                    Text("\(heartRateValues[index]) BPM")
+                                        .font(.system(size: 14, weight: .medium))
+                                        .padding(.vertical, 8)
+                                        .padding(.horizontal, 15)
+                                        .background(
+                                            Capsule()
+                                                .fill(Color.blue.opacity(0.2))
+                                        )
+                                        .overlay(
+                                            Capsule()
+                                                .stroke(Color.blue.opacity(0.5), lineWidth: 1)
+                                        )
+                                }
+                            }
+                            .padding(.horizontal)
+                        }
+                        .frame(height: 50)
+                    }
+                    
+                    // Finish button
+                    Button(action: {
+                        if heartRateValues.isEmpty {
+                            showAlert = true
+                        } else {
+                            finishCardio()
+                        }
+                    }) {
+                        Text("FINALIZAR CARDIO")
+                            .foregroundColor(.white)
+                            .frame(width: 200)
+                            .font(.system(size: 20, weight: .bold, design: .rounded))
+                            .padding()
+                            .background(
+                                LinearGradient(
+                                    gradient: Gradient(colors: [Color.blue, Color.blue.opacity(0.8)]),
+                                    startPoint: .leading,
+                                    endPoint: .trailing
+                                )
+                                .cornerRadius(15)
+                                .shadow(color: Color.blue.opacity(0.5), radius: 10, x: 0, y: 5)
+                            )
+                    }
+                    .padding(.top, 20)
+                    .alert(isPresented: $showAlert) {
+                        Alert(
+                            title: Text("Sem Registros"),
+                            message: Text("Você precisa registrar pelo menos um valor de batimento cardíaco."),
+                            dismissButton: .default(Text("OK"))
+                        )
+                    }
+                    
+                    Spacer()
                 }
-                
-                Spacer()
             }
-        }
-        .onDisappear {
-            stopTimer()
+            .onDisappear {
+                stopTimer()
+            }
         }
     }
     
