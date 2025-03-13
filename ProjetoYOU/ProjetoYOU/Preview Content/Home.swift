@@ -7,26 +7,26 @@ import Foundation
 //        print("URL inválida")
 //        return
 //    }
-//    
+//
 //    // Codificando os dados como JSON
 //    do {
 //        let encoder = JSONEncoder()
 //        encoder.dateEncodingStrategy = .iso8601  // Caso tenha datas no formato ISO 8601
 //        let jsonData = try encoder.encode(pessoa)
-//        
+//
 //        // Criando o request
 //        var request = URLRequest(url: url)
 //        request.httpMethod = "POST"
 //        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 //        request.httpBody = jsonData
-//        
+//
 //        // Enviando a requisição
 //        let task = URLSession.shared.dataTask(with: request) { data, response, error in
 //            if let error = error {
 //                print("Erro na requisição: \(error.localizedDescription)")
 //                return
 //            }
-//            
+//
 //            if let data = data, let response = response as? HTTPURLResponse, response.statusCode == 200 {
 //                // Aqui você pode processar a resposta, se necessário
 //                print("Dados enviados com sucesso: \(String(data: data, encoding: .utf8) ?? "")")
@@ -34,7 +34,7 @@ import Foundation
 //                print("Falha ao enviar os dados.")
 //            }
 //        }
-//        
+//
 //        // Iniciando a tarefa
 //        task.resume()
 //    } catch {
@@ -55,6 +55,9 @@ struct Home: View {
     @State private var textoalmo: String = ""
     @State private var textojant : String = ""
     @State private var textolanche : String = ""
+    
+    // Estado para controlar a apresentação da tela de Cardio
+    @State private var isShowingCardioTracker = false
     
     var body: some View{
         ZStack {
@@ -87,7 +90,8 @@ struct Home: View {
                 ScrollView{
                     // Botão "INICIAR O CARDIO"
                     Button(action: {
-                        // Ação para iniciar o cardio
+                        // Abre a tela de CardioTracker
+                        isShowingCardioTracker = true
                     }) {
                         Text("INICIAR O CARDIO")
                             .padding()
@@ -107,6 +111,9 @@ struct Home: View {
                             .shadow(color: minhaCor.opacity(0.6), radius: 10, x: 0, y: 5)
                     }
                     .padding(.top, 70)
+                    .sheet(isPresented: $isShowingCardioTracker) {
+                        CardioTrackerView()
+                    }
                     
                     // Layout horizontal: seta esquerda, card atual, seta direita
                     HStack {
