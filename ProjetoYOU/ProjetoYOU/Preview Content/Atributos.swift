@@ -11,16 +11,15 @@ import SwiftUI
 var minhaCor : Color = Color.pretoCinza
 var azul : Color = Color.azulBonito
 
-struct Data : Identifiable{
-    var id: Int
+struct DiaDaSemana: Hashable {
     var dia: String
-    var dat: String
+    var data: String
     var cafeDaManha: String
     var almoco: String
     var jantar: String
 }
 
-var arrayData = [
+let arrayData = [
     DiaDaSemana(dia: "Segunda-feira", data: "11/03",
                 cafeDaManha: "Café da manhã às 7h30 — Ingredientes: pão francês, café preto, queijo minas.",
                 almoco: "Almoço às 12h30 — Ingredientes: arroz branco, feijão carioca, carne assada, batata cozida, salada de alface e tomate.",
