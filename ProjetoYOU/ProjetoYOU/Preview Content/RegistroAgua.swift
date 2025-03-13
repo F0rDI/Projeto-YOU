@@ -90,60 +90,61 @@ struct RegistroAgua: View {
                             .shadow(color: azul.opacity(0.6), radius: 15, x: 0, y: 8)
                             .frame(width: 280)
                         
-                        VStack(spacing: 15) {
-                            Text("Estatísticas")
-                                .font(.system(size: 22, weight: .bold, design: .rounded))
-                                .foregroundColor(.white)
-                                .padding(.top, 10)
-                            
-                            VStack(spacing: 12) {
-                                HStack {
-                                    Image(systemName: "flame.fill")
-                                        .foregroundColor(.white)
-                                    
-                                    Text("Sequência atual:")
-                                        .font(.system(size: 16, weight: .medium, design: .rounded))
-                                        .foregroundColor(.white)
-                                    
-                                    Spacer()
-                                    
-                                    Text("\(meta) dias")
-                                        .font(.system(size: 16, weight: .bold, design: .rounded))
-                                        .foregroundColor(.white)
-                                }
+                            VStack(spacing: 15) {
+                                Text("Estatísticas")
+                                    .font(.system(size: 22, weight: .bold, design: .rounded))
+                                    .foregroundColor(.white)
+                                    .padding(.top, 10)
                                 
-                                HStack {
-                                    Image(systemName: "chart.bar.fill")
-                                        .foregroundColor(.white)
-                                    
-                                    Text("Progresso hoje:")
-                                        .font(.system(size: 16, weight: .medium, design: .rounded))
-                                        .foregroundColor(.white)
-                                    
-                                    Spacer()
-                                    
-                                    Text(dados ? "100%" : "70%")
-                                        .font(.system(size: 16, weight: .bold, design: .rounded))
-                                        .foregroundColor(.white)
-                                }
-                            }
-                            .padding(.horizontal)
-                            .padding(.vertical, 10)
-                            .background(Color.white.opacity(0.15))
-                            .cornerRadius(12)
-                            .padding(.horizontal, 15)
-                            
-                            Text("Você está \(meta) dias cumprindo a meta")
-                                .font(.system(size: 16, weight: .medium, design: .rounded))
-                                .foregroundColor(.white)
+                                VStack(spacing: 12) {
+                                    HStack {
+                                        Image(systemName: "flame.fill")
+                                            .foregroundColor(.white)
+                                        
+                                        Text("Sequência atual:")
+                                            .font(.system(size: 16, weight: .medium, design: .rounded))
+                                            .foregroundColor(.white)
+                                        
+                                        Spacer()
+                                        
+                                        Text("\(meta) dias")
+                                            .font(.system(size: 16, weight: .bold, design: .rounded))
+                                            .foregroundColor(.white)
+                                    }
+                                    HStack {
+                                        Image(systemName: "chart.bar.fill")
+                                            .foregroundColor(.white)
+                                        
+                                        Text("Progresso hoje:")
+                                            .font(.system(size: 16, weight: .medium, design: .rounded))
+                                            .foregroundColor(.white)
+                                        
+                                        Spacer()
+                                        
+                                        Text(dados ? "100%" : "70%")
+                                            .font(.system(size: 16, weight: .bold, design: .rounded))
+                                            .foregroundColor(.white)
+                                    }
+                                }.padding(.horizontal, 10)
+                                
+                                .padding(.horizontal)
                                 .padding(.vertical, 10)
-                                .padding(.horizontal, 20)
-                                .frame(maxWidth: .infinity)
                                 .background(Color.white.opacity(0.15))
                                 .cornerRadius(12)
-                                .padding(.horizontal, 15)
-                                .padding(.bottom, 15)
-                        }
+                                .padding(.horizontal)
+                                
+                                Text("Você está \(meta) dias cumprindo a meta")
+                                    .font(.system(size: 16, weight: .medium, design: .rounded))
+                                    .foregroundColor(.white)
+                                    .padding(.vertical, 10)
+                                    .padding(.horizontal, 20)
+                                    .frame(maxWidth: .infinity)
+                                    .background(Color.white.opacity(0.15))
+                                    .cornerRadius(12)
+                                    .padding(.horizontal, 15)
+                                    .padding(.bottom, 15)
+                            }
+                        
                     }
                     .padding(.bottom, 30)
                     
