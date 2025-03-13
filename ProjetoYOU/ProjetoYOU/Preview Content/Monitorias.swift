@@ -55,11 +55,13 @@ struct Monitorias: View {
                             }
                             
                             // Item de monitoramento: Peso
+                            NavigationLink(destination: PesoTeste()){
                             monitoringItem(
                                 icon: "scalemass.fill",
                                 text: "Peso atual",
                                 iconColor: .green
                             )
+                        }
                             
                             // Item de monitoramento: Água com navegação
                             NavigationLink(destination: RegistroAgua()) {
