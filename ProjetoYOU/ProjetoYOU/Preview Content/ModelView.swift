@@ -12,7 +12,7 @@ class ModelView : ObservableObject {
         
         
         func fetch(){
-            let url = "http://127.0.0.1:1880/teste"
+            let url = "http://127.0.0.1:1880/getPessoa"
             
             let task = URLSession.shared.dataTask(with: URL(string: url)!){ dados, _, error in
                 
