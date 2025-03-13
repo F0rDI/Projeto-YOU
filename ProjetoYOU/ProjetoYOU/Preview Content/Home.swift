@@ -1,46 +1,46 @@
 import SwiftUI
 import Foundation
 
-func enviarDadosParaServidor(pessoa: pessoa) {
-    // URL correta do servidor Node-RED
-    guard let url = URL(string: "http://127.0.0.1:1880/uploadPessoa78") else {
-        print("URL inválida")
-        return
-    }
-    
-    // Codificando os dados como JSON
-    do {
-        let encoder = JSONEncoder()
-        encoder.dateEncodingStrategy = .iso8601  // Caso tenha datas no formato ISO 8601
-        let jsonData = try encoder.encode(pessoa)
-        
-        // Criando o request
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpBody = jsonData
-        
-        // Enviando a requisição
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                print("Erro na requisição: \(error.localizedDescription)")
-                return
-            }
-            
-            if let data = data, let response = response as? HTTPURLResponse, response.statusCode == 200 {
-                // Aqui você pode processar a resposta, se necessário
-                print("Dados enviados com sucesso: \(String(data: data, encoding: .utf8) ?? "")")
-            } else {
-                print("Falha ao enviar os dados.")
-            }
-        }
-        
-        // Iniciando a tarefa
-        task.resume()
-    } catch {
-        print("Erro ao codificar os dados: \(error.localizedDescription)")
-    }
-}
+//func enviarDadosParaServidor(pessoa: pessoa) {
+//    // URL correta do servidor Node-RED
+//    guard let url = URL(string: "http://127.0.0.1:1880/uploadPessoa78") else {
+//        print("URL inválida")
+//        return
+//    }
+//    
+//    // Codificando os dados como JSON
+//    do {
+//        let encoder = JSONEncoder()
+//        encoder.dateEncodingStrategy = .iso8601  // Caso tenha datas no formato ISO 8601
+//        let jsonData = try encoder.encode(pessoa)
+//        
+//        // Criando o request
+//        var request = URLRequest(url: url)
+//        request.httpMethod = "POST"
+//        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+//        request.httpBody = jsonData
+//        
+//        // Enviando a requisição
+//        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+//            if let error = error {
+//                print("Erro na requisição: \(error.localizedDescription)")
+//                return
+//            }
+//            
+//            if let data = data, let response = response as? HTTPURLResponse, response.statusCode == 200 {
+//                // Aqui você pode processar a resposta, se necessário
+//                print("Dados enviados com sucesso: \(String(data: data, encoding: .utf8) ?? "")")
+//            } else {
+//                print("Falha ao enviar os dados.")
+//            }
+//        }
+//        
+//        // Iniciando a tarefa
+//        task.resume()
+//    } catch {
+//        print("Erro ao codificar os dados: \(error.localizedDescription)")
+//    }
+//}
 
 struct Home: View {
     // Controla o índice do dia atual (qual card mostrar)
@@ -50,19 +50,13 @@ struct Home: View {
     @State private var expandedIndex: Int? = nil
     @State private var estaEditando: Bool = false
     @State private var auxEditar: Bool = false
-    @State private var texto: String = "Almoço às 12h30 — Ingredientes: arroz, feijão, frango…"
-
-//"Café da manhã às 7h30 — Ingredientes: ovos mexidos, torrada, suco de maçã, mamão."
-//"Almoço às 13h00 — Ingredientes: arroz integral, feijão preto, carne moída, brócolis cozido, salada de rúcula."
-//"Jantar às 19h30 — Ingredientes: filé de peixe grelhado, purê de batata-doce, salada de cenoura e pepino, água com gás."
-
-//"Café da manhã às 6h45 — Ingredientes: aveia com mel, frutas vermelhas, café preto."
-//"Almoço às 12h00 — Ingredientes: macarrão integral, molho de tomate caseiro, peito de frango grelhado, salada de espinafre."
-//"Jantar às 20h00 — Ingredientes: arroz de couve-flor, bife de carne de panela, legumes no vapor, chá verde."
-    
     @StateObject var vm = ModelView()
     
-    var body: some View {
+    @State private var textoalmo: String = ""
+    @State private var textojant : String = ""
+    @State private var textolanche : String = ""
+    
+    var body: some View{
         ZStack {
             // Fundo gradiente
             LinearGradient(
@@ -89,7 +83,7 @@ struct Home: View {
                     Spacer()
                 }
                 .padding(.horizontal)
-
+                
                 ScrollView{
                     // Botão "INICIAR O CARDIO"
                     Button(action: {
@@ -154,11 +148,11 @@ struct Home: View {
                                     )
                                 )
                                 .shadow(color: minhaCor.opacity(0.6), radius: 15, x: 0, y: 8)
-                                
+                            
                             VStack {
                                 // Parte principal do card (data e dia)
                                 VStack {
-                                    Text(item.dat)
+                                    Text(item.data)
                                         .padding(.top, 30)
                                         .font(.system(size: 40, weight: .heavy))
                                         .foregroundColor(.white)
@@ -169,7 +163,7 @@ struct Home: View {
                                             .padding()
                                             .foregroundStyle(Color.white.opacity(0.9))
                                             .font(.system(size: 30, weight: .medium, design: .rounded))
-                                            .padding(.trailing, 10)
+                                            //.padding(.trailing, 10)
                                     }
                                 }
                                 .onTapGesture {
@@ -187,48 +181,102 @@ struct Home: View {
                                 if expandedIndex == scrollIndex {
                                     // Rolagem vertical caso as infos sejam grandes
                                     ScrollView(.vertical, showsIndicators: true) {
-                                        VStack(alignment: .leading, spacing: 12) {
-                                                    Text("Refeição do dia:")
-                                                        .font(.system(size: 18, weight: .bold, design: .rounded))
-                                                        .foregroundColor(.white)
-                                                        .padding(.bottom, 5)
-                                                    
-                                                    HStack{
-                                                        if estaEditando {
-                                                            TextField("Digite algo", text: $texto, axis: .vertical)
-                                                                .textFieldStyle(PlainTextFieldStyle())
-                                                                .foregroundColor(minhaCor)
-                                                                .padding()
-                                                                .frame(height: 150)
-                                                                .background(
-                                                                    RoundedRectangle(cornerRadius: 12)
-                                                                        .fill(Color.white)
-                                                                        .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
-                                                                )
-                                                                .onChange(of: auxEditar) {
-                                                                    estaEditando = false
-                                                                }
-                                                        } else {
-                                                            Text(texto)
-                                                                .padding()
-                                                                .background(Color.white.opacity(0.15))
-                                                                .cornerRadius(12)
-                                                        }
-                                                        
-                                                        EditButton(isEditing: $estaEditando, Aux: $auxEditar)
-                                                    }
-                                                    .animation(.easeInOut, value: estaEditando)
-                                                    
-                                                    Group {
-                                                        MealItem(time: "12h30", meal: "Almoço", ingredients: "arroz, feijão, frango")
-                                                        MealItem(time: "16h00", meal: "Lanche", ingredients: "frutas, iogurte")
-                                                        MealItem(time: "20h00", meal: "Jantar", ingredients: "salada, peixe")
-                                                    }
-                                                }
-                                                .padding()
+                                        VStack(alignment: .leading, spacing: 12){
+                                            Text("Café da manha:")
+                                                .font(.system(size: 18, weight: .bold, design: .rounded))
                                                 .foregroundColor(.white)
-//                                            }
-//                                        }
+                                                .padding(.top, 5)
+                                            
+                                            HStack{
+                                                if estaEditando {
+                                                    TextField("Digite algo", text: $textolanche, axis: .vertical)
+                                                        .textFieldStyle(PlainTextFieldStyle())
+                                                        .foregroundColor(minhaCor)
+                                                        .padding()
+                                                        .frame(height: 150)
+                                                        .background(
+                                                            RoundedRectangle(cornerRadius: 12)
+                                                                .fill(Color.white)
+                                                                .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
+                                                        )
+                                                        .onChange(of: auxEditar) {
+                                                            estaEditando = false
+                                                        }
+                                                } else {
+                                                    Text(item.cafeDaManha)
+                                                        .padding()
+                                                        .background(Color.white.opacity(0.15))
+                                                        .cornerRadius(12)
+                                                }
+                                                
+                                                EditButton(isEditing: $estaEditando, Aux: $auxEditar)
+                                            }
+                                            .animation(.easeInOut, value: estaEditando)
+                                            
+                                            Text("Almoço:")
+                                                .font(.system(size: 18, weight: .bold, design: .rounded))
+                                                .foregroundColor(.white)
+                                                .padding(.top, 5)
+                                            
+                                            HStack{
+                                                if estaEditando {
+                                                    TextField("Digite algo", text: $textoalmo, axis: .vertical)
+                                                        .textFieldStyle(PlainTextFieldStyle())
+                                                        .foregroundColor(minhaCor)
+                                                        .padding()
+                                                        .frame(height: 150)
+                                                        .background(
+                                                            RoundedRectangle(cornerRadius: 12)
+                                                                .fill(Color.white)
+                                                                .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
+                                                        )
+                                                        .onChange(of: auxEditar) {
+                                                            estaEditando = false
+                                                        }
+                                                } else {
+                                                    Text(item.almoco)
+                                                        .padding()
+                                                        .background(Color.white.opacity(0.15))
+                                                        .cornerRadius(12)
+                                                }
+                                                
+                                                EditButton(isEditing: $estaEditando, Aux: $auxEditar)
+                                            }
+                                            .animation(.easeInOut, value: estaEditando)
+                                            
+                                                Text("Janta:")
+                                                    .font(.system(size: 18, weight: .bold, design: .rounded))
+                                                    .foregroundColor(.white)
+                                                    .padding(.top, 5)
+                                                
+                                                HStack{
+                                                    if estaEditando {
+                                                        TextField("Digite algo", text: $textolanche, axis: .vertical)
+                                                            .textFieldStyle(PlainTextFieldStyle())
+                                                            .foregroundColor(minhaCor)
+                                                            .padding()
+                                                            .frame(height: 150)
+                                                            .background(
+                                                                RoundedRectangle(cornerRadius: 12)
+                                                                    .fill(Color.white)
+                                                                    .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
+                                                            )
+                                                            .onChange(of: auxEditar) {
+                                                                estaEditando = false
+                                                            }
+                                                    } else {
+                                                        Text(item.jantar)
+                                                            .padding()
+                                                            .background(Color.white.opacity(0.15))
+                                                            .cornerRadius(12)
+                                                    }
+                                                    
+                                                    EditButton(isEditing: $estaEditando, Aux: $auxEditar)
+                                                }
+                                                .animation(.easeInOut, value: estaEditando)
+                                        }
+                                        .padding()
+                                        .foregroundColor(.white)
                                     }
                                     .frame(minHeight: 100) // Limita a altura do "popup"
                                     .background(
@@ -271,8 +319,6 @@ struct Home: View {
                     }
                     .padding(.top, 70)
                     
-                    Spacer()
-                    
                     Button("ENVIAR") {
                         /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Action@*/ /*@END_MENU_TOKEN@*/
                     }
@@ -284,8 +330,8 @@ struct Home: View {
                         LinearGradient(gradient: Gradient(colors: [azul, azul.opacity(0.8)]),
                                        startPoint: .leading,
                                        endPoint: .trailing)
-                            .cornerRadius(15)
-                            .shadow(color: azul.opacity(0.5), radius: 10, x: 0, y: 5)
+                        .cornerRadius(15)
+                        .shadow(color: azul.opacity(0.5), radius: 10, x: 0, y: 5)
                     )
                     .padding(.bottom, 20)
                     .padding(.top, 40)
