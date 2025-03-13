@@ -70,8 +70,61 @@ struct Home: View {
             .ignoresSafeArea()
             
             VStack {
-                // Cabeçalho com o título "MEU DIA"
-                HStack{
+                // Cabeçalho com o logo e título "MEU DIA"
+                HStack {
+                    // Logo melhorada do aplicativo "YOU"
+                    ZStack {
+                        // Efeito de brilho externo
+                        Circle()
+                            .fill(minhaCor.opacity(0.3))
+                            .frame(width: 68, height: 68)
+                            .blur(radius: 8)
+                        
+                        // Círculo exterior
+                        Circle()
+                            .fill(
+                                LinearGradient(
+                                    gradient: Gradient(colors: [Color.white, Color.white.opacity(0.7)]),
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
+                            )
+                            .frame(width: 60, height: 60)
+                            .shadow(color: minhaCor.opacity(0.5), radius: 6, x: 0, y: 3)
+                        
+                        // Círculo interno com gradiente
+                        Circle()
+                            .fill(
+                                LinearGradient(
+                                    gradient: Gradient(colors: [minhaCor, azul]),
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
+                            )
+                            .frame(width: 52, height: 52)
+                        
+                        // Texto "YOU" com efeito de sombra
+                        Text("YOU")
+                            .font(.system(size: 20, weight: .black, design: .rounded))
+                            .foregroundColor(.white)
+                            .shadow(color: .black.opacity(0.2), radius: 1, x: 1, y: 1)
+                            .rotationEffect(Angle(degrees: -5))
+                        
+                        // Pequenos círculos decorativos ao redor
+                        ForEach(0..<5) { index in
+                            Circle()
+                                .fill(Color.white)
+                                .frame(width: 6, height: 6)
+                                .offset(
+                                    x: 28 * cos(Double(index) * 2 * .pi / 5),
+                                    y: 28 * sin(Double(index) * 2 * .pi / 5)
+                                )
+                        }
+                    }
+                    .padding(.leading, 15)
+                    
+                    Spacer()
+                    
                     Text("MEU DIA")
                         .foregroundColor(.white)
                         .frame(width: 130)
@@ -83,7 +136,6 @@ struct Home: View {
                                 .shadow(color: azul.opacity(0.5), radius: 10, x: 0, y: 5)
                         )
                         .padding(.top, 1)
-                    Spacer()
                 }
                 .padding(.horizontal)
                 
@@ -110,7 +162,7 @@ struct Home: View {
                             )
                             .shadow(color: minhaCor.opacity(0.6), radius: 10, x: 0, y: 5)
                     }
-                    .padding(.top, 70)
+                    .padding(.top, 55)
                     .sheet(isPresented: $isShowingCardioTracker) {
                         CardioTrackerView()
                     }
@@ -258,7 +310,7 @@ struct Home: View {
                                                 
                                                 HStack{
                                                     if estaEditando {
-                                                        TextField("Digite algo", text: $textolanche, axis: .vertical)
+                                                        TextField("Digite algo", text: $textojant, axis: .vertical)
                                                             .textFieldStyle(PlainTextFieldStyle())
                                                             .foregroundColor(minhaCor)
                                                             .padding()
@@ -324,7 +376,7 @@ struct Home: View {
                         }
                         .padding(5)
                     }
-                    .padding(.top, 70)
+                    .padding(.top, 50)
                     
                     Button("ENVIAR") {
                         /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Action@*/ /*@END_MENU_TOKEN@*/
@@ -345,34 +397,6 @@ struct Home: View {
                 }
             }
         }
-    }
-}
-
-// Componente para exibir informações da refeição de forma mais organizada
-struct MealItem: View {
-    var time: String
-    var meal: String
-    var ingredients: String
-    
-    var body: some View {
-        VStack(alignment: .leading, spacing: 5) {
-            HStack {
-                Text(meal)
-                    .font(.system(size: 16, weight: .semibold))
-                Text("às \(time)")
-                    .font(.system(size: 16))
-            }
-            .foregroundColor(.white)
-            
-            Text("Ingredientes: \(ingredients)")
-                .font(.system(size: 14))
-                .foregroundColor(.white.opacity(0.9))
-                .padding(.leading, 5)
-        }
-        .padding(.vertical, 8)
-        .padding(.horizontal, 12)
-        .background(Color.white.opacity(0.15))
-        .cornerRadius(10)
     }
 }
 
