@@ -1,26 +1,19 @@
-//
-//  ContentView.swift
-//  MonitoriasProjeto
-//
-//  Created by Turma02-22 on 26/02/25.
-//
-
 import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        TabView{
-            Agua()
-                .tabItem {
-                    Label("", systemImage: "drop.fill")
-                }
+        TabView {
             Home()
                 .tabItem {
-                    Label("", systemImage: "house.fill")
+                    Label("Home", systemImage: "house.fill")
                 }
             Monitorias()
                 .tabItem {
-                    Label("", systemImage: "doc.richtext.fill.he")
+                    Label("Monitorias", systemImage: "doc.richtext.fill.he")
+                }
+            Agua()
+                .tabItem {
+                    Label("Água", systemImage: "drop.fill")
                 }
         }
     }
