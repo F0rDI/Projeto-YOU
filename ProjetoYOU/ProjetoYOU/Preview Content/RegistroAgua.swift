@@ -40,7 +40,7 @@ struct RegistroAgua: View {
                 
                 ScrollView {
                     // Card para visualização de cumprimento da meta
-                    ZStack {
+                    VStack{
                         
                         if vm.dadosPessoais.isEmpty {
                             // Exibe uma mensagem de carregamento ou "sem dados"
@@ -50,44 +50,48 @@ struct RegistroAgua: View {
                         else {
                             // Itera sobre o array dadosPessoais, pegando o primeiro item para acessar dadosTotais
                             if let dadosTotais = vm.dadosPessoais.first?.dadosTotais {
+                                
                                 ForEach(dadosTotais, id: \.dia) { dado in
                                     if let dia = dado.dia, let agua = dado.agua {
-                                        RoundedRectangle(cornerRadius: 20)
-                                            .fill(
-                                                LinearGradient(
-                                                    gradient: Gradient(colors: [
-                                                        agua ? Color.green : minhaCor,
-                                                        agua ? Color.green.opacity(0.8) : minhaCor.opacity(0.8)
-                                                    ]),
-                                                    startPoint: .topLeading,
-                                                    endPoint: .bottomTrailing
-                                                )
-                                            )
-                                            .shadow(color: agua ? Color.green.opacity(0.6) : minhaCor.opacity(0.6), radius: 15, x: 0, y: 8)
-                                            .frame(width: 240, height: 200)
                                         
-                                        VStack {
-                                            // Título com a data
-                                            Text(intToDate(dia), format: .dateTime.day().month())
-                                                .padding(.top, 20)
-                                                .font(.system(size: 38, weight: .heavy))
-                                                .foregroundColor(.white)
+                                        ZStack {
+                                            RoundedRectangle(cornerRadius: 20)
+                                                .fill(
+                                                    LinearGradient(
+                                                        gradient: Gradient(colors: [
+                                                            agua ? Color.green : minhaCor,
+                                                            agua ? Color.green.opacity(0.8) : minhaCor.opacity(0.8)
+                                                        ]),
+                                                        startPoint: .topLeading,
+                                                        endPoint: .bottomTrailing
+                                                    )
+                                                )
+                                                .shadow(color: agua ? Color.green.opacity(0.6) : minhaCor.opacity(0.6), radius: 15, x: 0, y: 8)
+                                                .frame(width: 240, height: 200)
                                             
-                                            // Ícone de gota d'água
-                                            Image(systemName: "drop.fill")
-                                                .resizable()
-                                                .aspectRatio(contentMode: .fit)
-                                                .frame(width: 50, height: 50)
-                                                .foregroundColor(.white)
-                                                .padding(.vertical, 10)
-                                            
-                                            // Status de meta
-                                            Text(agua ? "Meta cumprida!" : "Meta não cumprida")
-                                                .font(.system(size: 18, weight: .bold, design: .rounded))
-                                                .foregroundColor(.white)
-                                                .padding(10)
-                                                .background(Color.white.opacity(0.2))
-                                                .cornerRadius(10)
+                                            VStack {
+                                                // Título com a data
+                                                Text(intToDate(dia), format: .dateTime.day().month())
+                                                    .padding(.top, 20)
+                                                    .font(.system(size: 38, weight: .heavy))
+                                                    .foregroundColor(.white)
+                                                
+                                                // Ícone de gota d'água
+                                                Image(systemName: "drop.fill")
+                                                    .resizable()
+                                                    .aspectRatio(contentMode: .fit)
+                                                    .frame(width: 50, height: 50)
+                                                    .foregroundColor(.white)
+                                                    .padding(.vertical, 10)
+                                                
+                                                // Status de meta
+                                                Text(agua ? "Meta cumprida!" : "Meta não cumprida")
+                                                    .font(.system(size: 18, weight: .bold, design: .rounded))
+                                                    .foregroundColor(.white)
+                                                    .padding(10)
+                                                    .background(Color.white.opacity(0.2))
+                                                    .cornerRadius(10)
+                                            }
                                         }
                                     }
                                 }
