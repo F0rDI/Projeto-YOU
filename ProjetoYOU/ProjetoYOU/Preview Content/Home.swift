@@ -52,9 +52,14 @@ struct Home: View {
     @State private var auxEditar: Bool = false
     @StateObject var vm = ModelView()
     
-    @State private var textoalmo: String = ""
-    @State private var textojant : String = ""
-    @State private var textolanche : String = ""
+    @State var textoalmo: String = ""
+    @State var textojant : String = ""
+    @State var textolanche : String = ""
+    
+    @State private var estaEditandoCafe: Bool = false
+    @State private var estaEditandoAlmo: Bool = false
+    @State private var estaEditandoJanta: Bool = false
+    @State private var cliquei: Bool = false
     
     // Estado para controlar a apresentação da tela de Cardio
     @State private var isShowingCardioTracker = false
@@ -247,7 +252,7 @@ struct Home: View {
                                                 .padding(.top, 5)
                                             
                                             HStack{
-                                                if estaEditando {
+                                                if estaEditandoCafe {
                                                     TextField("Digite algo", text: $textolanche, axis: .vertical)
                                                         .textFieldStyle(PlainTextFieldStyle())
                                                         .foregroundColor(minhaCor)
@@ -258,8 +263,8 @@ struct Home: View {
                                                                 .fill(Color.white)
                                                                 .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
                                                         )
-                                                        .onChange(of: auxEditar) {
-                                                            estaEditando = false
+                                                        .onChange(of: textolanche) {
+                                                            arrayData[scrollIndex].cafeDaManha = textolanche
                                                         }
                                                 } else {
                                                     Text(item.cafeDaManha)
@@ -268,9 +273,23 @@ struct Home: View {
                                                         .cornerRadius(12)
                                                 }
                                                 
-                                                EditButton(isEditing: $estaEditando, Aux: $auxEditar)
+                                                Image(systemName: cliquei ? "checkmark.circle.fill" : "pencil")
+                                                    .foregroundColor(.white)
+                                                    .padding(10)
+                                                    .background(
+                                                        Circle()
+                                                            .fill(azul)
+                                                            .shadow(color: azul.opacity(0.5), radius: 5, x: 0, y: 3)
+                                                    )
+                                                    .onTapGesture {
+                                                        cliquei.toggle()
+                                                        estaEditandoCafe.toggle()
+                                                        textolanche = arrayData[scrollIndex].cafeDaManha
+                                                       
+                                                    }
+                                                
                                             }
-                                            .animation(.easeInOut, value: estaEditando)
+                                            .animation(.easeInOut, value: estaEditandoCafe)
                                             
                                             Text("Almoço:")
                                                 .font(.system(size: 18, weight: .bold, design: .rounded))
@@ -278,7 +297,7 @@ struct Home: View {
                                                 .padding(.top, 5)
                                             
                                             HStack{
-                                                if estaEditando {
+                                                if estaEditandoAlmo {
                                                     TextField("Digite algo", text: $textoalmo, axis: .vertical)
                                                         .textFieldStyle(PlainTextFieldStyle())
                                                         .foregroundColor(minhaCor)
@@ -289,8 +308,8 @@ struct Home: View {
                                                                 .fill(Color.white)
                                                                 .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
                                                         )
-                                                        .onChange(of: auxEditar) {
-                                                            estaEditando = false
+                                                        .onChange(of: textoalmo) {
+                                                            arrayData[scrollIndex].almoco = textoalmo
                                                         }
                                                 } else {
                                                     Text(item.almoco)
@@ -299,40 +318,66 @@ struct Home: View {
                                                         .cornerRadius(12)
                                                 }
                                                 
-                                                EditButton(isEditing: $estaEditando, Aux: $auxEditar)
-                                            }
-                                            .animation(.easeInOut, value: estaEditando)
-                                            
-                                                Text("Janta:")
-                                                    .font(.system(size: 18, weight: .bold, design: .rounded))
+                                                Image(systemName: cliquei ? "checkmark.circle.fill" : "pencil")
                                                     .foregroundColor(.white)
-                                                    .padding(.top, 5)
-                                                
-                                                HStack{
-                                                    if estaEditando {
-                                                        TextField("Digite algo", text: $textojant, axis: .vertical)
-                                                            .textFieldStyle(PlainTextFieldStyle())
-                                                            .foregroundColor(minhaCor)
-                                                            .padding()
-                                                            .frame(height: 150)
-                                                            .background(
-                                                                RoundedRectangle(cornerRadius: 12)
-                                                                    .fill(Color.white)
-                                                                    .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
-                                                            )
-                                                            .onChange(of: auxEditar) {
-                                                                estaEditando = false
-                                                            }
-                                                    } else {
-                                                        Text(item.jantar)
-                                                            .padding()
-                                                            .background(Color.white.opacity(0.15))
-                                                            .cornerRadius(12)
+                                                    .padding(10)
+                                                    .background(
+                                                        Circle()
+                                                            .fill(azul)
+                                                            .shadow(color: azul.opacity(0.5), radius: 5, x: 0, y: 3)
+                                                    )
+                                                    .onTapGesture {
+                                                        cliquei.toggle()
+                                                        estaEditandoAlmo.toggle()
+                                                        textoalmo = arrayData[scrollIndex].almoco
+                                                       
                                                     }
-                                                    
-                                                    EditButton(isEditing: $estaEditando, Aux: $auxEditar)
+                                            }
+                                            .animation(.easeInOut, value: estaEditandoAlmo)
+                                            
+                                            Text("Janta:")
+                                                .font(.system(size: 18, weight: .bold, design: .rounded))
+                                                .foregroundColor(.white)
+                                                .padding(.top, 5)
+                                            
+                                            HStack{
+                                                if estaEditandoJanta {
+                                                    TextField("Digite algo", text: $textojant, axis: .vertical)
+                                                        .textFieldStyle(PlainTextFieldStyle())
+                                                        .foregroundColor(minhaCor)
+                                                        .padding()
+                                                        .frame(height: 150)
+                                                        .background(
+                                                            RoundedRectangle(cornerRadius: 12)
+                                                                .fill(Color.white)
+                                                                .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
+                                                        )
+                                                        .onChange(of: textojant) {
+                                                            arrayData[scrollIndex].jantar = textojant
+                                                        }
+                                                } else {
+                                                    Text(item.jantar)
+                                                        .padding()
+                                                        .background(Color.white.opacity(0.15))
+                                                        .cornerRadius(12)
                                                 }
-                                                .animation(.easeInOut, value: estaEditando)
+                                                
+                                                Image(systemName: cliquei ? "checkmark.circle.fill" : "pencil")
+                                                    .foregroundColor(.white)
+                                                    .padding(10)
+                                                    .background(
+                                                        Circle()
+                                                            .fill(azul)
+                                                            .shadow(color: azul.opacity(0.5), radius: 5, x: 0, y: 3)
+                                                    )
+                                                    .onTapGesture {
+                                                        cliquei.toggle()
+                                                        estaEditandoJanta.toggle()
+                                                        textojant = arrayData[scrollIndex].jantar
+                                                       
+                                                    }
+                                            }
+                                            .animation(.easeInOut, value: estaEditandoJanta)
                                         }
                                         .padding()
                                         .foregroundColor(.white)
